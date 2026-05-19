@@ -549,7 +549,6 @@ tbody td{padding:9px 10px;vertical-align:middle}
       <svg viewBox="0 0 24 24"><path d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
       <input type="text" id="globalSearch" placeholder="Search…" autocomplete="off">
     </div>
-    <button class="btn-logout" id="btnLogout" style="display:none">⏻ Logout</button>
     <button class="settings-btn" id="btnSettings" style="display:none">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
       Settings
@@ -1113,7 +1112,6 @@ async function doLogin(){
 }
 
 function doLogout(){
-  if(!confirm('Log out of Phoenix Store?'))return;
   token='';localStorage.removeItem('ph_token');
   document.getElementById('loginUser').value='';
   document.getElementById('loginPass').value='';
@@ -1125,7 +1123,6 @@ function doLogout(){
 document.getElementById('btnLogin').addEventListener('click',doLogin);
 document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 document.getElementById('loginUser').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass').focus();});
-// btnLogoutM no longer exists, handled via settings modal
 
 /* ─── INIT CHECK ─── */
 if(!checkSession()){
@@ -1595,9 +1592,6 @@ function maskEmail(e){const[u,d]=e.split('@');return u.slice(0,2)+'***@'+d}
 document.getElementById('btnSettings').addEventListener('click',openSettingsModal);
 document.getElementById('btnSettingsM').addEventListener('click',openSettingsModal);
 document.getElementById('btnLogoutSettings').addEventListener('click',()=>{closeModal('settingsModal');doLogout();});
-
-// btn-logout in header (desktop) - use shared doLogout
-document.getElementById('btnLogout').addEventListener('click',doLogout);
 
 /* ─── CHANGE PASSWORD ─── */
 document.getElementById('btnChangePass').addEventListener('click',()=>{
