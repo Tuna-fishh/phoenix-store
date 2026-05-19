@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phoenix Store</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --green: #00e676;
+    --blue: #1f6feb;
+    --red: #f85149;
+    --yellow: #e3b341;
+    --purple: #7c3aed;
+    --input-bg: #21262d;
+  }
+
+  body { background: var(--bg); color: var(--text); font-family: 'Courier New', monospace; font-size: 13px; height: 100vh; overflow: hidden; }
+
+  /* ── LOGIN ── */
+  #login-screen {
+    position: fixed; inset: 0; background: var(--bg);
+    display: flex; align-items: center; justify-content: center; z-index: 100;
+  }
+  #login-screen.hidden { display: none; }
+  .login-box {
+    background: var(--panel); border: 1px solid var(--border);
+    padding: 40px; width: 320px; border-radius: 6px;
+  }
+  .login-box h1 { color: var(--green); font-size: 20px; letter-spacing: 2px; margin-bottom: 24px; text-align: center; }
+  .login-box input {
+    width: 100%; background: var(--input-bg); border: 1px solid var(--border);
+    color: var(--text); padding: 10px 12px; margin-bottom: 12px; border-radius: 4px;
+    font-family: inherit; font-size: 13px; outline: none;
+  }
+  .login-box input:focus { border-color: var(--green); }
+  .login-btn {
+    width: 100%; background: var(--green); color: #000; border: none;
+    padding: 10px; font-family: inherit; font-size: 13px; font-weight: bold;
+    letter-spacing: 1px; cursor: pointer; border-radius: 4px; margin-top: 4px;
+  }
+  .login-btn:hover { background: #00c853; }
+  #login-error { color: var(--red); font-size: 12px; margin-top: 8px; text-align: center; min-height: 16px; }
+
+  /* ── MAIN APP ── */
+  #app { display: flex; flex-direction: column; height: 100vh; }
+  #app.hidden { display: none; }
+
+  /* HEADER */
+  .header {
+    background: var(--panel); border-bottom: 1px solid var(--border);
+    padding: 0 16px; height: 48px; display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .header-logo { display: flex; align-items: center; gap: 10px; }
+  .header-logo .grid-icon { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; width: 20px; }
+  .header-logo .grid-icon span { background: var(--blue); height: 8px; width: 8px; border-radius: 1px; }
+  .header-logo h1 { font-size: 15px; letter-spacing: 3px; font-weight: bold; }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .search-box {
+    background: var(--input-bg); border: 1px solid var(--border);
+    padding: 6px 12px 6px 28px; border-radius: 4px; color: var(--text);
+    font-family: inherit; font-size: 12px; width: 200px; outline: none;
+    position: relative;
+  }
+  .search-wrap { position: relative; }
+  .search-wrap::before { content: '🔍'; position: absolute; left: 8px; top: 50%; transform: translateY(-50%); font-size: 11px; }
+  .logout-btn {
+    background: transparent; border: 1px solid var(--border); color: var(--muted);
+    padding: 5px 10px; font-family: inherit; font-size: 11px; cursor: pointer; border-radius: 4px;
+  }
+  .logout-btn:hover { border-color: var(--red); color: var(--red); }
+
+  /* MAIN CONTENT */
+  .main { display: flex; flex: 1; overflow: hidden; gap: 0; }
+
+  /* PANELS */
+  .panel { border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+  .panel-left { width: 320px; flex-shrink: 0; }
+  .panel-mid { flex: 1; }
+  .panel-right { width: 260px; flex-shrink: 0; border-right: none; }
+
+  .panel-label {
+    font-size: 11px; letter-spacing: 2px; color: var(--muted); font-weight: bold;
+    padding: 10px 14px 8px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+  }
+  .panel-label .badge { color: var(--text); font-size: 11px; }
+
+  /* SCANNER */
+  .scanner-visual {
+    margin: 10px 14px; background: #000; border: 1px solid var(--green);
+    height: 110px; position: relative; overflow: hidden; border-radius: 2px;
+  }
+  .scanner-corners::before, .scanner-corners::after {
+    content: ''; position: absolute; width: 16px; height: 16px;
+    border-color: var(--green); border-style: solid;
+  }
+  .scanner-corners::before { top: 4px; left: 4px; border-width: 2px 0 0 2px; }
+  .scanner-corners::after { bottom: 4px; right: 4px; border-width: 0 2px 2px 0; }
+  .scanner-bars { display: flex; align-items: flex-end; gap: 3px; padding: 10px 20px; height: 100%; }
+  .scanner-bars span {
+    background: var(--green); flex: 1; opacity: 0.7;
+    animation: barPulse 1.5s ease-in-out infinite;
+  }
+  .scanner-bars span:nth-child(1) { height: 40%; animation-delay: 0s; }
+  .scanner-bars span:nth-child(2) { height: 70%; animation-delay: 0.1s; }
+  .scanner-bars span:nth-child(3) { height: 55%; animation-delay: 0.2s; }
+  .scanner-bars span:nth-child(4) { height: 80%; animation-delay: 0.05s; }
+  .scanner-bars span:nth-child(5) { height: 45%; animation-delay: 0.15s; }
+  .scanner-bars span:nth-child(6) { height: 65%; animation-delay: 0.25s; }
+  .scanner-bars span:nth-child(7) { height: 90%; animation-delay: 0.1s; }
+  .scanner-bars span:nth-child(8) { height: 50%; animation-delay: 0.3s; }
+  .scanner-bars span:nth-child(9) { height: 75%; animation-delay: 0.05s; }
+  .scanner-bars span:nth-child(10) { height: 35%; animation-delay: 0.2s; }
+  .scanner-bars span:nth-child(11) { height: 60%; animation-delay: 0.1s; }
+  .scanner-bars span:nth-child(12) { height: 85%; animation-delay: 0.15s; }
+  @keyframes barPulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+
+  .scan-line {
+    position: absolute; width: 100%; height: 1px; background: var(--green);
+    top: 0; animation: scanLine 2s linear infinite; opacity: 0.8; box-shadow: 0 0 6px var(--green);
+  }
+  @keyframes scanLine { 0%{top:0} 100%{top:100%} }
+
+  .last-scan {
+    margin: 8px 14px; background: var(--input-bg); border: 1px solid var(--border);
+    padding: 8px 10px; border-radius: 3px; font-size: 11px;
+  }
+  .last-scan .label { color: var(--muted); }
+  .last-scan .value { color: var(--green); margin-top: 2px; }
+
+  .simulate-btn {
+    margin: 8px 14px; background: var(--blue); color: white; border: none;
+    padding: 10px; width: calc(100% - 28px); font-family: inherit; font-size: 12px;
+    font-weight: bold; letter-spacing: 1px; cursor: pointer; border-radius: 3px;
+  }
+  .simulate-btn:hover { background: #388bfd; }
+
+  .add-section { padding: 10px 14px; flex: 1; overflow-y: auto; }
+  .add-section .section-label { font-size: 11px; letter-spacing: 2px; color: var(--muted); margin-bottom: 10px; }
+  .field-row { margin-bottom: 8px; }
+  .field-row label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .field-row input {
+    width: 100%; background: var(--input-bg); border: 1px solid var(--border);
+    color: var(--text); padding: 7px 10px; border-radius: 3px;
+    font-family: inherit; font-size: 12px; outline: none;
+  }
+  .field-row input:focus { border-color: var(--blue); }
+  .save-btn {
+    width: 100%; background: var(--green); color: #000; border: none;
+    padding: 10px; font-family: inherit; font-size: 12px; font-weight: bold;
+    letter-spacing: 1px; cursor: pointer; border-radius: 3px; margin-top: 4px;
+  }
+  .save-btn:hover { background: #00c853; }
+
+  /* PRODUCT TABLE */
+  .filter-bar { padding: 10px 14px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+  .filter-bar input {
+    width: 100%; background: var(--input-bg); border: 1px solid var(--border);
+    color: var(--text); padding: 8px 12px; border-radius: 3px;
+    font-family: inherit; font-size: 12px; outline: none;
+  }
+  .filter-bar input:focus { border-color: var(--blue); }
+
+  .table-wrap { flex: 1; overflow-y: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    background: var(--panel); color: var(--muted); font-size: 11px; letter-spacing: 1px;
+    padding: 8px 14px; text-align: left; border-bottom: 1px solid var(--border);
+    position: sticky; top: 0;
+  }
+  tbody tr { border-bottom: 1px solid var(--border); }
+  tbody tr:hover { background: rgba(255,255,255,0.03); }
+  tbody td { padding: 8px 14px; font-size: 12px; }
+  .barcode-cell { color: var(--blue); cursor: pointer; }
+  .barcode-cell:hover { text-decoration: underline; }
+  .price-cell { color: var(--green); }
+  .stock-cell { display: flex; align-items: center; gap: 6px; }
+  .stock-warn { color: var(--yellow); font-size: 14px; }
+  .actions-cell { display: flex; gap: 6px; }
+  .edit-btn {
+    background: var(--blue); color: white; border: none; padding: 4px 10px;
+    font-family: inherit; font-size: 11px; cursor: pointer; border-radius: 3px;
+  }
+  .edit-btn:hover { background: #388bfd; }
+  .del-btn {
+    background: var(--red); color: white; border: none; padding: 4px 8px;
+    font-family: inherit; font-size: 12px; cursor: pointer; border-radius: 3px;
+  }
+  .del-btn:hover { background: #da3633; }
+
+  .table-footer {
+    padding: 8px 14px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
+  }
+  .add-custom-btn {
+    background: var(--green); color: #000; border: none; padding: 8px 16px;
+    font-family: inherit; font-size: 12px; font-weight: bold; letter-spacing: 1px;
+    cursor: pointer; border-radius: 3px;
+  }
+  .add-custom-btn:hover { background: #00c853; }
+
+  /* CART */
+  .cart-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); gap: 8px; }
+  .cart-empty .cart-icon { font-size: 32px; opacity: 0.3; }
+  .cart-items { flex: 1; overflow-y: auto; padding: 8px 0; }
+  .cart-item {
+    padding: 8px 14px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .cart-item-name { font-size: 12px; }
+  .cart-item-detail { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .cart-item-price { color: var(--green); font-size: 12px; }
+  .cart-remove { background: none; border: none; color: var(--red); cursor: pointer; font-size: 14px; }
+
+  .cart-summary { padding: 10px 14px; border-top: 1px solid var(--border); flex-shrink: 0; }
+  .summary-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 12px; color: var(--muted); }
+  .summary-row span:last-child { color: var(--green); }
+  .total-row { display: flex; justify-content: space-between; margin: 10px 0; }
+  .total-row .total-label { font-size: 15px; font-weight: bold; letter-spacing: 2px; }
+  .total-row .total-val { color: var(--green); font-size: 15px; font-weight: bold; }
+  .confirm-btn {
+    width: 100%; background: var(--purple); color: white; border: none;
+    padding: 10px; font-family: inherit; font-size: 12px; font-weight: bold;
+    letter-spacing: 1px; cursor: pointer; border-radius: 3px; margin-bottom: 6px;
+  }
+  .confirm-btn:hover { background: #6d28d9; }
+  .clear-btn {
+    width: 100%; background: transparent; color: var(--muted); border: 1px solid var(--border);
+    padding: 8px; font-family: inherit; font-size: 12px; cursor: pointer; border-radius: 3px;
+  }
+  .clear-btn:hover { border-color: var(--red); color: var(--red); }
+
+  /* FOOTER */
+  .footer {
+    background: var(--panel); border-top: 1px solid var(--border);
+    padding: 6px 16px; display: flex; align-items: center; justify-content: space-between;
+    font-size: 11px; color: var(--muted); flex-shrink: 0;
+  }
+  .footer-left span { margin-right: 16px; }
+  .footer-left .active { color: var(--green); }
+  .logs-btn {
+    background: transparent; border: 1px solid var(--border); color: var(--muted);
+    padding: 4px 12px; font-family: inherit; font-size: 11px; cursor: pointer; border-radius: 3px;
+  }
+  .logs-btn:hover { border-color: var(--blue); color: var(--blue); }
+
+  /* LOGS MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    display: flex; align-items: center; justify-content: center; z-index: 50;
+  }
+  .modal-overlay.hidden { display: none; }
+  .modal {
+    background: var(--panel); border: 1px solid var(--border);
+    width: 700px; max-height: 80vh; border-radius: 6px; display: flex; flex-direction: column;
+  }
+  .modal-header {
+    padding: 14px 16px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .modal-header h2 { font-size: 13px; letter-spacing: 2px; }
+  .modal-close { background: none; border: none; color: var(--muted); font-size: 18px; cursor: pointer; }
+  .modal-body { flex: 1; overflow-y: auto; padding: 12px 16px; }
+  .log-entry { border: 1px solid var(--border); border-radius: 4px; margin-bottom: 10px; overflow: hidden; }
+  .log-entry-header {
+    background: var(--input-bg); padding: 8px 12px;
+    display: flex; justify-content: space-between; font-size: 11px;
+  }
+  .log-entry-header .log-id { color: var(--blue); }
+  .log-entry-header .log-total { color: var(--green); }
+  .log-items { padding: 8px 12px; font-size: 11px; color: var(--muted); }
+  .modal-footer { padding: 10px 16px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; }
+  .clear-logs-btn {
+    background: var(--red); color: white; border: none; padding: 7px 14px;
+    font-family: inherit; font-size: 11px; cursor: pointer; border-radius: 3px;
+  }
+
+  /* EDIT MODAL */
+  .edit-modal {
+    background: var(--panel); border: 1px solid var(--border);
+    width: 360px; border-radius: 6px;
+  }
+  .edit-modal .modal-header { padding: 12px 16px; }
+  .edit-modal .modal-body { padding: 14px 16px; }
+  .edit-modal .field-row input { background: var(--input-bg); }
+  .edit-save-btn {
+    background: var(--green); color: #000; border: none; padding: 9px 20px;
+    font-family: inherit; font-size: 12px; font-weight: bold; cursor: pointer; border-radius: 3px;
+  }
+  .edit-cancel-btn {
+    background: transparent; color: var(--muted); border: 1px solid var(--border);
+    padding: 9px 20px; font-family: inherit; font-size: 12px; cursor: pointer; border-radius: 3px; margin-left: 8px;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-box">
+    <h1>⚡ PHOENIX STORE</h1>
+    <input type="text" id="login-user" placeholder="Username" autocomplete="off">
+    <input type="password" id="login-pass" placeholder="Password">
+    <button class="login-btn" onclick="doLogin()">▶ LOGIN</button>
+    <div id="login-error"></div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" class="hidden">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-logo">
+      <div class="grid-icon">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <h1>PHOENIX STORE</h1>
+    </div>
+    <div class="header-right">
+      <div class="search-wrap">
+        <input class="search-box" id="global-search" placeholder="Search..." oninput="filterProducts()">
+      </div>
+      <button class="logout-btn" onclick="doLogout()">LOGOUT</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- LEFT: SCANNER + ADD -->
+    <div class="panel panel-left">
+      <div class="panel-label">SCANNER STATUS PANEL <span style="color:var(--green)">● ACTIVE</span></div>
+
+      <div class="scanner-visual">
+        <div class="scanner-corners"></div>
+        <div class="scanner-bars">
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="scan-line"></div>
+      </div>
+
+      <div class="last-scan">
+        <div class="label">LAST SCAN: <span id="last-scan-val" style="color:var(--blue)">—</span></div>
+        <div class="value" id="last-scan-name">[No scan yet]</div>
+      </div>
+
+      <button class="simulate-btn" onclick="simulateScan()">▶ SIMULATE SCAN</button>
+
+      <div class="add-section">
+        <div class="section-label">MANUALLY ADD / EDIT CODE</div>
+        <div class="field-row">
+          <label>Barcode:</label>
+          <input type="text" id="f-barcode" placeholder="e.g., 1234567890">
+        </div>
+        <div class="field-row">
+          <label>Item Name:</label>
+          <input type="text" id="f-name" placeholder="Product name...">
+        </div>
+        <div class="field-row">
+          <label>Price ($):</label>
+          <input type="number" id="f-price" placeholder="e.g., 19.99" step="0.01">
+        </div>
+        <div class="field-row">
+          <label>Stock:</label>
+          <input type="number" id="f-stock" placeholder="e.g., 100">
+        </div>
+        <button class="save-btn" onclick="saveProduct()">💾 SAVE TO DATABASE</button>
+      </div>
+    </div>
+
+    <!-- MID: PRODUCT TABLE -->
+    <div class="panel panel-mid">
+      <div class="panel-label">
+        PRODUCT DATABASE
+        <span class="badge" id="product-count">0 ITEMS</span>
+      </div>
+      <div class="filter-bar">
+        <input type="text" id="filter-input" placeholder="☰ Filter by Code or Name..." oninput="filterProducts()">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>BARCODE</th>
+              <th>ITEM NAME</th>
+              <th>PRICE</th>
+              <th>STOCK</th>
+              <th>ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody id="product-tbody"></tbody>
+        </table>
+      </div>
+      <div class="table-footer">
+        <span></span>
+        <button class="add-custom-btn" onclick="focusAddForm()">+ ADD CUSTOM CODE</button>
+      </div>
+    </div>
+
+    <!-- RIGHT: CART -->
+    <div class="panel panel-right">
+      <div class="panel-label">
+        🛒 CURRENT CART
+        <span class="badge" id="cart-count">0 ITEMS</span>
+      </div>
+
+      <div id="cart-empty" class="cart-empty">
+        <div class="cart-icon">🛒</div>
+        <div style="font-size:11px">Scan items to add them</div>
+      </div>
+      <div id="cart-items" class="cart-items" style="display:none"></div>
+
+      <div class="cart-summary">
+        <div class="summary-row"><span>Items</span><span id="s-items">0</span></div>
+        <div class="summary-row"><span>Subtotal</span><span id="s-subtotal">$0.00</span></div>
+        <div class="total-row">
+          <span class="total-label">TOTAL</span>
+          <span class="total-val" id="s-total">$0.00</span>
+        </div>
+        <button class="confirm-btn" onclick="confirmPurchase()">✓ CONFIRM PURCHASE</button>
+        <button class="clear-btn" onclick="clearCart()">✕ Clear Cart</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-left">
+      <span>DATABASE: <span class="active">API</span></span>
+      <span>SCANNER: <span class="active">Active</span></span>
+    </div>
+    <button class="logs-btn" onclick="openLogs()">📋 LOGS</button>
+  </div>
+
+</div>
+
+<!-- LOGS MODAL -->
+<div class="modal-overlay hidden" id="logs-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>📋 PURCHASE LOGS</h2>
+      <button class="modal-close" onclick="closeLogs()">✕</button>
+    </div>
+    <div class="modal-body" id="logs-body"></div>
+    <div class="modal-footer">
+      <button class="clear-logs-btn" onclick="clearLogs()">🗑 Clear All Logs</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay hidden" id="edit-modal">
+  <div class="edit-modal">
+    <div class="modal-header">
+      <h2>EDIT PRODUCT</h2>
+      <button class="modal-close" onclick="closeEdit()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-barcode">
+      <div class="field-row"><label>Item Name:</label><input type="text" id="edit-name"></div>
+      <div class="field-row"><label>Price ($):</label><input type="number" id="edit-price" step="0.01"></div>
+      <div class="field-row"><label>Stock:</label><input type="number" id="edit-stock"></div>
+      <div style="margin-top:14px">
+        <button class="edit-save-btn" onclick="saveEdit()">SAVE</button>
+        <button class="edit-cancel-btn" onclick="closeEdit()">CANCEL</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── CONFIG ──
+  const API = ''; // same origin
+  let token = localStorage.getItem('ph_token') || '';
+  let products = [];
+  let cart = [];
+
+  // ── AUTH ──
+  async function doLogin() {
+    const username = document.getElementById('login-user').value.trim();
+    const password = document.getElementById('login-pass').value;
+    document.getElementById('login-error').textContent = '';
+    try {
+      const r = await fetch(`${API}/api/login`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const d = await r.json();
+      if (!r.ok) { document.getElementById('login-error').textContent = d.error; return; }
+      token = d.token;
+      localStorage.setItem('ph_token', token);
+      showApp();
+    } catch(e) {
+      document.getElementById('login-error').textContent = 'Connection error.';
+    }
+  }
+
+  function doLogout() {
+    token = '';
+    localStorage.removeItem('ph_token');
+    document.getElementById('app').classList.add('hidden');
+    document.getElementById('login-screen').classList.remove('hidden');
+  }
+
+  function showApp() {
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    loadProducts();
+  }
+
+  // Auto-login if token exists
+  if (token) showApp();
+
+  // Enter key on login
+  document.getElementById('login-pass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+  // ── API HELPERS ──
+  async function apiFetch(path, opts={}) {
+    const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
+    const r = await fetch(`${API}${path}`, { ...opts, headers: { ...headers, ...(opts.headers||{}) } });
+    if (r.status === 401 || r.status === 403) { doLogout(); return null; }
+    return r;
+  }
+
+  // ── PRODUCTS ──
+  async function loadProducts() {
+    const r = await apiFetch('/api/products');
+    if (!r) return;
+    products = await r.json();
+    renderProducts();
+  }
+
+  function renderProducts(filter='') {
+    const f = filter.toLowerCase();
+    const filtered = f ? products.filter(p => p.barcode.toLowerCase().includes(f) || p.name.toLowerCase().includes(f)) : products;
+    document.getElementById('product-count').textContent = `${filtered.length} ITEM${filtered.length!==1?'S':''}`;
+    const tbody = document.getElementById('product-tbody');
+    tbody.innerHTML = filtered.map(p => `
+      <tr>
+        <td class="barcode-cell" onclick="addToCart('${p.barcode}')">${p.barcode}</td>
+        <td>${p.name}</td>
+        <td class="price-cell">$${parseFloat(p.price).toFixed(2)}</td>
+        <td><div class="stock-cell">${p.stock<=5?'<span class="stock-warn">⚠</span>':''} ${p.stock}</div></td>
+        <td class="actions-cell">
+          <button class="edit-btn" onclick="openEdit('${p.barcode}')">Edit</button>
+          <button class="del-btn" onclick="deleteProduct('${p.barcode}')">✕</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function filterProducts() {
+    const f = document.getElementById('filter-input').value || document.getElementById('global-search').value;
+    renderProducts(f);
+  }
+
+  async function saveProduct() {
+    const barcode = document.getElementById('f-barcode').value.trim();
+    const name = document.getElementById('f-name').value.trim();
+    const price = document.getElementById('f-price').value;
+    const stock = document.getElementById('f-stock').value;
+    if (!barcode || !name) { alert('Barcode and name required.'); return; }
+
+    // Check if exists → update, else insert
+    const exists = products.find(p => p.barcode === barcode);
+    if (exists) {
+      await apiFetch(`/api/products/${barcode}`, {
+        method: 'PUT', body: JSON.stringify({ name, price, stock })
+      });
+    } else {
+      const r = await apiFetch('/api/products', {
+        method: 'POST', body: JSON.stringify({ barcode, name, price, stock })
+      });
+      if (r && !r.ok) { const d = await r.json(); alert(d.error); return; }
+    }
+    document.getElementById('f-barcode').value = '';
+    document.getElementById('f-name').value = '';
+    document.getElementById('f-price').value = '';
+    document.getElementById('f-stock').value = '';
+    await loadProducts();
+  }
+
+  async function deleteProduct(barcode) {
+    if (!confirm(`Delete ${barcode}?`)) return;
+    await apiFetch(`/api/products/${barcode}`, { method: 'DELETE' });
+    await loadProducts();
+  }
+
+  function focusAddForm() {
+    document.getElementById('f-barcode').focus();
+  }
+
+  // ── EDIT MODAL ──
+  function openEdit(barcode) {
+    const p = products.find(x => x.barcode === barcode);
+    if (!p) return;
+    document.getElementById('edit-barcode').value = p.barcode;
+    document.getElementById('edit-name').value = p.name;
+    document.getElementById('edit-price').value = p.price;
+    document.getElementById('edit-stock').value = p.stock;
+    document.getElementById('edit-modal').classList.remove('hidden');
+  }
+  function closeEdit() { document.getElementById('edit-modal').classList.add('hidden'); }
+  async function saveEdit() {
+    const barcode = document.getElementById('edit-barcode').value;
+    const name = document.getElementById('edit-name').value;
+    const price = document.getElementById('edit-price').value;
+    const stock = document.getElementById('edit-stock').value;
+    await apiFetch(`/api/products/${barcode}`, {
+      method: 'PUT', body: JSON.stringify({ name, price, stock })
+    });
+    closeEdit();
+    await loadProducts();
+  }
+
+  // ── CART ──
+  function addToCart(barcode) {
+    const p = products.find(x => x.barcode === barcode);
+    if (!p) return;
+    const existing = cart.find(x => x.barcode === barcode);
+    if (existing) { existing.qty++; } else { cart.push({ ...p, qty: 1 }); }
+    document.getElementById('last-scan-val').textContent = barcode;
+    document.getElementById('last-scan-name').textContent = p.name;
+    renderCart();
+  }
+
+  function removeFromCart(barcode) {
+    cart = cart.filter(x => x.barcode !== barcode);
+    renderCart();
+  }
+
+  function clearCart() { cart = []; renderCart(); }
+
+  function renderCart() {
+    const total = cart.reduce((s, x) => s + x.price * x.qty, 0);
+    const totalQty = cart.reduce((s, x) => s + x.qty, 0);
+    document.getElementById('cart-count').textContent = `${totalQty} ITEM${totalQty!==1?'S':''}`;
+    document.getElementById('s-items').textContent = totalQty;
+    document.getElementById('s-subtotal').textContent = `$${total.toFixed(2)}`;
+    document.getElementById('s-total').textContent = `$${total.toFixed(2)}`;
+    const emptyEl = document.getElementById('cart-empty');
+    const itemsEl = document.getElementById('cart-items');
+    if (cart.length === 0) { emptyEl.style.display='flex'; itemsEl.style.display='none'; return; }
+    emptyEl.style.display='none'; itemsEl.style.display='block';
+    itemsEl.innerHTML = cart.map(x => `
+      <div class="cart-item">
+        <div>
+          <div class="cart-item-name">${x.name}</div>
+          <div class="cart-item-detail">${x.barcode} × ${x.qty}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="cart-item-price">$${(x.price*x.qty).toFixed(2)}</span>
+          <button class="cart-remove" onclick="removeFromCart('${x.barcode}')">✕</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function confirmPurchase() {
+    if (cart.length === 0) { alert('Cart is empty.'); return; }
+    const total = cart.reduce((s, x) => s + x.price * x.qty, 0);
+    const totalQty = cart.reduce((s, x) => s + x.qty, 0);
+    const log = {
+      id: Date.now().toString(),
+      date: new Date().toISOString(),
+      items: cart.map(x => ({ barcode: x.barcode, name: x.name, price: x.price, qty: x.qty })),
+      total, totalQty
+    };
+    const r = await apiFetch('/api/logs', { method: 'POST', body: JSON.stringify(log) });
+    if (r && r.ok) { cart = []; renderCart(); await loadProducts(); alert('Purchase confirmed!'); }
+  }
+
+  // ── SIMULATE SCAN ──
+  function simulateScan() {
+    if (products.length === 0) { alert('No products to scan.'); return; }
+    const p = products[Math.floor(Math.random() * products.length)];
+    addToCart(p.barcode);
+  }
+
+  // ── LOGS ──
+  async function openLogs() {
+    const r = await apiFetch('/api/logs');
+    if (!r) return;
+    const logs = await r.json();
+    const body = document.getElementById('logs-body');
+    if (logs.length === 0) { body.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px">No logs yet.</div>'; }
+    else {
+      body.innerHTML = logs.map(l => `
+        <div class="log-entry">
+          <div class="log-entry-header">
+            <span class="log-id">#${l.id}</span>
+            <span>${new Date(l.date).toLocaleString()}</span>
+            <span class="log-total">$${parseFloat(l.total).toFixed(2)} (${l.totalQty} items)</span>
+          </div>
+          <div class="log-items">${l.items.map(i=>`${i.name} × ${i.qty}`).join(' | ')}</div>
+        </div>
+      `).join('');
+    }
+    document.getElementById('logs-modal').classList.remove('hidden');
+  }
+  function closeLogs() { document.getElementById('logs-modal').classList.add('hidden'); }
+  async function clearLogs() {
+    if (!confirm('Clear all logs?')) return;
+    await apiFetch('/api/logs', { method: 'DELETE' });
+    closeLogs();
+  }
+</script>
+</body>
+</html>
