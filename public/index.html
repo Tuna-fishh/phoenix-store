@@ -448,6 +448,11 @@ tbody td{padding:9px 10px;vertical-align:middle}
 .cam-found{animation:camFound .5s ease}
 @keyframes camFound{0%{background:rgba(34,197,94,.4)}100%{background:rgba(0,0,0,.92)}}
 
+/* ─── html5-qrcode overrides ─── */
+#camReader video{width:100%!important;height:100%!important;object-fit:cover!important;border-radius:16px}
+#camReader img{display:none!important}
+#camReader{background:#000}
+
 /* ═══ MOBILE SETTINGS BTN ═══ */
 .m-settings-fab{position:fixed;bottom:calc(64px + env(safe-area-inset-bottom) + 16px);left:16px;width:44px;height:44px;background:var(--surface2);border:1px solid var(--border2);border-radius:50%;color:var(--text2);font-size:20px;cursor:pointer;z-index:150;display:none;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
 .m-settings-fab:active{transform:scale(.93)}
@@ -834,8 +839,8 @@ tbody td{padding:9px 10px;vertical-align:middle}
 <!-- ═══════════ CAMERA SCANNER OVERLAY ═══════════ -->
 <div class="cam-overlay" id="camOverlay">
   <div class="cam-container" id="camContainer">
-    <video class="cam-video" id="camVideo" playsinline autoplay muted></video>
-    <div class="cam-corners">
+    <div id="camReader" style="width:100%;height:100%;border-radius:16px;overflow:hidden"></div>
+    <div class="cam-corners" style="pointer-events:none;position:absolute;inset:0">
       <div class="cam-corner tl"></div>
       <div class="cam-corner tr"></div>
       <div class="cam-corner bl"></div>
@@ -1789,21 +1794,21 @@ document.getElementById('fpResend').addEventListener('click',()=>{
   document.getElementById('fpOtpInput').value='';updateOtpBoxes('');
 });
 
-/* ─── CAMERA BARCODE SCANNER ─── */
-let zxingReader=null;
-let camScanning=false;
+/* ─── CAMERA BARCODE SCANNER (html5-qrcode) ─── */
+let html5QrScanner=null;
+let camActive=false;
 
-function loadZXingBrowser(){
+function loadHtml5Qrcode(){
   return new Promise((res,rej)=>{
-    if(window.ZXingBrowser){res();return;}
+    if(window.Html5Qrcode){res();return;}
     const s=document.createElement('script');
-    s.src='https://unpkg.com/@zxing/browser@0.1.4/umd/index.min.js';
-    s.onload=res;
+    s.src='https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';
+    s.onload=()=>{window.Html5Qrcode?res():rej(new Error('Html5Qrcode not defined after load'))};
     s.onerror=()=>{
-      // fallback mirror
       const s2=document.createElement('script');
-      s2.src='https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.4/umd/index.min.js';
-      s2.onload=res;s2.onerror=rej;
+      s2.src='https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js';
+      s2.onload=()=>{window.Html5Qrcode?res():rej(new Error('Html5Qrcode not defined'))};
+      s2.onerror=rej;
       document.head.appendChild(s2);
     };
     document.head.appendChild(s);
@@ -1811,53 +1816,69 @@ function loadZXingBrowser(){
 }
 
 async function openCameraScanner(){
-  const overlay=document.getElementById('camOverlay');
-  overlay.classList.add('open');
-  camScanning=true;
+  if(camActive)return;
+  document.getElementById('camOverlay').classList.add('open');
   document.getElementById('camStatus').textContent='📦 Loading scanner…';
+  // Clear any leftover content in the reader div
+  document.getElementById('camReader').innerHTML='';
   try{
-    await loadZXingBrowser();
-    document.getElementById('camStatus').textContent='🔍 Scanning for barcode…';
-    const video=document.getElementById('camVideo');
-    zxingReader=new window.ZXingBrowser.BrowserMultiFormatReader();
-    // decodeFromConstraints streams camera to video + fires callback on each result
-    await zxingReader.decodeFromConstraints(
-      {video:{facingMode:{ideal:'environment'}}},
-      video,
-      (result,err)=>{
-        if(!camScanning)return;
-        if(result){
-          camFoundBarcode(result.getText());
-        }
-        // err is thrown every frame when no barcode found — that's normal, ignore it
+    await loadHtml5Qrcode();
+    camActive=true;
+    document.getElementById('camStatus').textContent='🔍 Point camera at a barcode…';
+    html5QrScanner=new Html5Qrcode('camReader');
+    const config={
+      fps:15,
+      qrbox:{width:240,height:160},
+      aspectRatio:1.0,
+      supportedScanTypes:[
+        Html5QrcodeScanType.SCAN_TYPE_CAMERA
+      ]
+    };
+    await html5QrScanner.start(
+      {facingMode:'environment'},
+      config,
+      (decodedText)=>{
+        // Success — barcode found
+        camFoundBarcode(decodedText);
+      },
+      ()=>{
+        // Scan frame failed — totally normal, ignore
       }
     );
   }catch(err){
-    if(camScanning){
-      const msg=err&&err.name==='NotAllowedError'
-        ?'❌ Camera permission denied. Allow camera in browser settings.'
-        :'❌ Camera error: '+(err&&err.message||err);
-      document.getElementById('camStatus').textContent=msg;
+    camActive=false;
+    let msg='❌ Camera error.';
+    if(err&&(err.name==='NotAllowedError'||String(err).includes('permission'))){
+      msg='❌ Camera permission denied. Please allow camera access and try again.';
+    }else if(err&&err.message){
+      msg='❌ '+err.message;
     }
+    document.getElementById('camStatus').textContent=msg;
   }
 }
 
 function camFoundBarcode(code){
-  if(!camScanning)return;
-  camScanning=false;
+  if(!camActive)return;
   document.getElementById('camStatus').textContent='✅ Found: '+code;
-  document.getElementById('camOverlay').classList.add('cam-found');
   closeCameraScanner();
   setTimeout(()=>{processScan(code);},400);
 }
 
-function closeCameraScanner(){
-  camScanning=false;
-  try{if(zxingReader){zxingReader.reset();zxingReader=null;}}catch(e){}
-  const video=document.getElementById('camVideo');
-  if(video.srcObject){video.srcObject.getTracks().forEach(t=>t.stop());video.srcObject=null;}
+async function closeCameraScanner(){
+  camActive=false;
+  try{
+    if(html5QrScanner&&html5QrScanner.isScanning){
+      await html5QrScanner.stop();
+    }
+    if(html5QrScanner){
+      html5QrScanner.clear();
+      html5QrScanner=null;
+    }
+  }catch(e){}
+  document.getElementById('camReader').innerHTML='';
   document.getElementById('camOverlay').classList.remove('open');
-  setTimeout(()=>document.getElementById('camOverlay').classList.remove('cam-found'),600);
+  document.getElementById('camOverlay').classList.remove('cam-found');
+  document.getElementById('camStatus').textContent='🔍 Searching for barcode…';
 }
 
 document.getElementById('camClose').addEventListener('click',closeCameraScanner);
