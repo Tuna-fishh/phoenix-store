@@ -1790,77 +1790,74 @@ document.getElementById('fpResend').addEventListener('click',()=>{
 });
 
 /* ─── CAMERA BARCODE SCANNER ─── */
-let camStream=null;
-let camAnimFrame=null;
-let camCanvas=null;
-let camCtx=null;
+let zxingReader=null;
+let camScanning=false;
 
-async function openCameraScanner(){
-  const overlay=document.getElementById('camOverlay');
-  overlay.classList.add('open');
-  document.getElementById('camStatus').textContent='🔍 Starting camera…';
-  try{
-    camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}}});
-    const video=document.getElementById('camVideo');
-    video.srcObject=camStream;
-    await video.play();
-    // Wait for ZXing to load
-    if(!window.ZXing){
-      document.getElementById('camStatus').textContent='📦 Loading scanner library…';
-      await loadZXing();
-    }
-    document.getElementById('camStatus').textContent='🔍 Searching for barcode…';
-    camCanvas=document.createElement('canvas');
-    camCtx=camCanvas.getContext('2d');
-    scanFrame();
-  }catch(err){
-    document.getElementById('camStatus').textContent='❌ Camera access denied. Check browser permissions.';
-  }
-}
-
-function loadZXing(){
+function loadZXingBrowser(){
   return new Promise((res,rej)=>{
+    if(window.ZXingBrowser){res();return;}
     const s=document.createElement('script');
-    s.src='https://cdnjs.cloudflare.com/ajax/libs/zxing-js/0.18.6/index.min.js';
-    s.onload=res;s.onerror=rej;
+    s.src='https://unpkg.com/@zxing/browser@0.1.4/umd/index.min.js';
+    s.onload=res;
+    s.onerror=()=>{
+      // fallback mirror
+      const s2=document.createElement('script');
+      s2.src='https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.4/umd/index.min.js';
+      s2.onload=res;s2.onerror=rej;
+      document.head.appendChild(s2);
+    };
     document.head.appendChild(s);
   });
 }
 
-function scanFrame(){
-  const video=document.getElementById('camVideo');
-  if(!video.videoWidth){camAnimFrame=requestAnimationFrame(scanFrame);return;}
-  camCanvas.width=video.videoWidth;
-  camCanvas.height=video.videoHeight;
-  camCtx.drawImage(video,0,0);
+async function openCameraScanner(){
+  const overlay=document.getElementById('camOverlay');
+  overlay.classList.add('open');
+  camScanning=true;
+  document.getElementById('camStatus').textContent='📦 Loading scanner…';
   try{
-    const hints=new Map();
-    const codeReader=new window.ZXing.BrowserMultiFormatReader();
-    const imgData=camCtx.getImageData(0,0,camCanvas.width,camCanvas.height);
-    const luminance=new window.ZXing.RGBLuminanceSource(imgData.data,camCanvas.width,camCanvas.height);
-    const bitmap=new window.ZXing.BinaryBitmap(new window.ZXing.HybridBinarizer(luminance));
-    const result=new window.ZXing.MultiFormatReader().decode(bitmap);
-    if(result&&result.text){
-      camFoundBarcode(result.text);
-      return;
+    await loadZXingBrowser();
+    document.getElementById('camStatus').textContent='🔍 Scanning for barcode…';
+    const video=document.getElementById('camVideo');
+    zxingReader=new window.ZXingBrowser.BrowserMultiFormatReader();
+    // decodeFromConstraints streams camera to video + fires callback on each result
+    await zxingReader.decodeFromConstraints(
+      {video:{facingMode:{ideal:'environment'}}},
+      video,
+      (result,err)=>{
+        if(!camScanning)return;
+        if(result){
+          camFoundBarcode(result.getText());
+        }
+        // err is thrown every frame when no barcode found — that's normal, ignore it
+      }
+    );
+  }catch(err){
+    if(camScanning){
+      const msg=err&&err.name==='NotAllowedError'
+        ?'❌ Camera permission denied. Allow camera in browser settings.'
+        :'❌ Camera error: '+(err&&err.message||err);
+      document.getElementById('camStatus').textContent=msg;
     }
-  }catch(e){}
-  camAnimFrame=requestAnimationFrame(scanFrame);
+  }
 }
 
 function camFoundBarcode(code){
-  document.getElementById('camOverlay').classList.add('cam-found');
+  if(!camScanning)return;
+  camScanning=false;
   document.getElementById('camStatus').textContent='✅ Found: '+code;
+  document.getElementById('camOverlay').classList.add('cam-found');
   closeCameraScanner();
-  setTimeout(()=>{processScan(code);},300);
+  setTimeout(()=>{processScan(code);},400);
 }
 
 function closeCameraScanner(){
-  if(camAnimFrame){cancelAnimationFrame(camAnimFrame);camAnimFrame=null;}
-  if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}
-  document.getElementById('camVideo').srcObject=null;
+  camScanning=false;
+  try{if(zxingReader){zxingReader.reset();zxingReader=null;}}catch(e){}
+  const video=document.getElementById('camVideo');
+  if(video.srcObject){video.srcObject.getTracks().forEach(t=>t.stop());video.srcObject=null;}
   document.getElementById('camOverlay').classList.remove('open');
-  document.getElementById('camOverlay').classList.remove('cam-found');
+  setTimeout(()=>document.getElementById('camOverlay').classList.remove('cam-found'),600);
 }
 
 document.getElementById('camClose').addEventListener('click',closeCameraScanner);
