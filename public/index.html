@@ -24,16 +24,61 @@
 html{height:100%}
 body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
 
+/* ═══ LOGIN SCREEN ═══ */
+#loginScreen{
+  position:fixed;inset:0;background:var(--bg);z-index:9999;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+}
+.login-box{
+  background:var(--surface);border:1px solid var(--border2);border-radius:16px;
+  padding:36px 32px;width:100%;max-width:380px;
+  box-shadow:0 24px 80px rgba(0,0,0,.6);
+}
+.login-logo{display:flex;align-items:center;gap:10px;margin-bottom:28px;justify-content:center}
+.login-logo-icon{width:36px;height:36px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.login-logo-icon svg{width:20px;height:20px;fill:white}
+.login-logo-text{font-size:16px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.login-title{font-size:13px;font-weight:700;color:var(--text2);text-align:center;margin-bottom:24px;letter-spacing:.06em;text-transform:uppercase}
+.login-field{margin-bottom:14px}
+.login-field label{display:block;font-size:10px;font-weight:700;color:var(--text2);margin-bottom:5px;letter-spacing:.1em;text-transform:uppercase}
+.login-field input{
+  width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);
+  color:var(--text);font-family:var(--mono);font-size:13px;padding:11px 12px;outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+.login-field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.login-field input::placeholder{color:var(--text3)}
+.login-err{
+  background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:var(--rs);
+  padding:9px 12px;font-family:var(--mono);font-size:11px;color:var(--danger);
+  margin-bottom:14px;display:none;text-align:center;
+}
+.login-err.show{display:block}
+.btn-login{
+  width:100%;background:linear-gradient(135deg,#1e40af,#2563eb);border:1px solid rgba(59,130,246,.4);
+  border-radius:var(--rs);color:#fff;font-family:var(--sans);font-size:12px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;padding:12px;cursor:pointer;
+  transition:all .2s;margin-top:6px;
+}
+.btn-login:hover{background:linear-gradient(135deg,#1d4ed8,#3b82f6);box-shadow:0 4px 14px rgba(59,130,246,.35)}
+.btn-login:active{transform:scale(.98)}
+.login-footer{text-align:center;margin-top:20px;font-family:var(--mono);font-size:10px;color:var(--text3)}
+.login-scan-line{height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin-bottom:24px;opacity:.4}
+
 /* ═══ HEADER ═══ */
 header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;height:var(--header-h);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;flex-shrink:0}
 .logo{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
 .logo-icon{width:28px;height:28px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .logo-icon svg{width:16px;height:16px;fill:white}
+.header-right{display:flex;align-items:center;gap:10px}
 .search-wrap{position:relative;width:200px;max-width:40vw}
 .search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:13px;height:13px;fill:var(--text3);pointer-events:none}
 #globalSearch{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:var(--mono);font-size:12px;padding:7px 10px 7px 28px;outline:none;transition:border-color .2s,box-shadow .2s}
 #globalSearch:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
 #globalSearch::placeholder{color:var(--text3)}
+.btn-logout{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text3);font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:6px 12px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-logout:hover{border-color:var(--danger);color:var(--danger)}
 
 /* ═══ DESKTOP LAYOUT ═══ */
 .desktop-main{display:grid;grid-template-columns:300px 1fr 270px;gap:12px;padding:12px 16px;flex:1}
@@ -167,7 +212,7 @@ tbody td{padding:9px 10px;vertical-align:middle}
 .btn-logs:hover{background:var(--surface3);border-color:var(--accent);color:var(--accent)}
 
 /* ═══ TOAST ═══ */
-#toast{position:fixed;bottom:18px;right:16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--text);box-shadow:0 8px 30px rgba(0,0,0,.4);transform:translateY(80px);opacity:0;transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .25s;z-index:999;max-width:min(310px, calc(100vw - 32px));display:flex;align-items:center;gap:8px}
+#toast{position:fixed;bottom:18px;right:16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--text);box-shadow:0 8px 30px rgba(0,0,0,.4);transform:translateY(80px);opacity:0;transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .25s;z-index:9998;max-width:min(310px, calc(100vw - 32px));display:flex;align-items:center;gap:8px}
 #toast.show{transform:translateY(0);opacity:1}
 #toast.success .toast-dot{background:var(--accent2);box-shadow:0 0 6px var(--accent2)}
 #toast.error .toast-dot{background:var(--danger);box-shadow:0 0 6px var(--danger)}
@@ -257,20 +302,12 @@ tbody td{padding:9px 10px;vertical-align:middle}
   .desktop-footer{display:none}
   .mobile-nav{display:flex}
   #toast{bottom:calc(var(--nav-h) + 10px)}
-
-  /* scanner page */
   #page-scanner{gap:10px}
-
-  /* db page */
   #page-db .db-panel{flex:1;min-height:0;display:flex;flex-direction:column}
   #page-db{gap:0}
-
-  /* mobile table — hide barcode column, show short version */
   .hide-mobile{display:none}
   thead th:nth-child(1){display:none}
   tbody td:nth-child(1){display:none}
-
-  /* cart page */
   #page-cart{gap:0}
   #page-cart .cart-panel{flex:1}
   #page-cart .cart-items{min-height:200px}
@@ -278,6 +315,31 @@ tbody td{padding:9px 10px;vertical-align:middle}
 </style>
 </head>
 <body>
+
+<!-- ═══════════ LOGIN SCREEN ═══════════ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M2 4h2v16H2V4zm3 0h1v16H5V4zm2 0h2v16H7V4zm3 0h1v16h-1V4zm3 0h2v16h-2V4zm3 0h1v16h-1V4zm2 0h3v16h-3V4z"/></svg>
+      </div>
+      <span class="login-logo-text">Phoenix Store</span>
+    </div>
+    <div class="login-scan-line"></div>
+    <div class="login-title">🔒 Staff Login Required</div>
+    <div class="login-err" id="loginErr">Invalid username or password.</div>
+    <div class="login-field">
+      <label>Username</label>
+      <input type="text" id="loginUser" placeholder="Enter username…" autocomplete="username" autocapitalize="none">
+    </div>
+    <div class="login-field">
+      <label>Password</label>
+      <input type="password" id="loginPass" placeholder="Enter password…" autocomplete="current-password">
+    </div>
+    <button class="btn-login" id="btnLogin">→ Sign In</button>
+    <div class="login-footer">Phoenix Store v1.0 — Authorized access only</div>
+  </div>
+</div>
 
 <!-- ═══════════ HEADER ═══════════ -->
 <header>
@@ -287,9 +349,12 @@ tbody td{padding:9px 10px;vertical-align:middle}
     </div>
     Phoenix Store
   </div>
-  <div class="search-wrap">
-    <svg viewBox="0 0 24 24"><path d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-    <input type="text" id="globalSearch" placeholder="Search…" autocomplete="off">
+  <div class="header-right">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24"><path d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <input type="text" id="globalSearch" placeholder="Search…" autocomplete="off">
+    </div>
+    <button class="btn-logout" id="btnLogout">⏻ Logout</button>
   </div>
 </header>
 
@@ -378,6 +443,8 @@ tbody td{padding:9px 10px;vertical-align:middle}
     <span class="label">DATABASE:</span><span class="val">LocalStorage</span>
     &nbsp;|&nbsp;
     <span class="label">SCANNER:</span><span class="val">Active</span>
+    &nbsp;|&nbsp;
+    <span class="label">USER:</span><span class="val">admin</span>
   </div>
   <button class="btn-logs" id="btnLogs">
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
@@ -417,6 +484,10 @@ tbody td{padding:9px 10px;vertical-align:middle}
       <div class="frow"><label>Stock:</label><input type="number" id="fStockM" placeholder="100" step="1" min="0" autocomplete="off" inputmode="numeric"></div>
       <button class="btn-save" id="btnSaveM">💾 Save</button>
     </div>
+  </div>
+  <!-- Mobile logout -->
+  <div style="margin-top:10px;text-align:center">
+    <button class="btn-logout" id="btnLogoutM" style="font-size:11px;padding:8px 20px">⏻ Logout</button>
   </div>
 </div>
 
@@ -464,8 +535,6 @@ tbody td{padding:9px 10px;vertical-align:middle}
     </div>
   </div>
 </div>
-
-<!-- Logs Page (mobile opens modal) -->
 
 <!-- ═══════════ MOBILE NAV ═══════════ -->
 <nav class="mobile-nav">
@@ -543,6 +612,47 @@ tbody td{padding:9px 10px;vertical-align:middle}
 </div>
 
 <script>
+/* ─── LOGIN ─── */
+const AUTH={user:'admin',pass:'1879'};
+const SESSION_KEY='phoenix_auth';
+
+function checkSession(){return sessionStorage.getItem(SESSION_KEY)==='true';}
+function doLogin(){
+  const u=document.getElementById('loginUser').value.trim();
+  const p=document.getElementById('loginPass').value;
+  const err=document.getElementById('loginErr');
+  if(u===AUTH.user&&p===AUTH.pass){
+    sessionStorage.setItem(SESSION_KEY,'true');
+    document.getElementById('loginScreen').style.display='none';
+    renderBarcodeVis('');renderTable();renderCart();
+  }else{
+    err.classList.add('show');
+    document.getElementById('loginPass').value='';
+    document.getElementById('loginPass').focus();
+    setTimeout(()=>err.classList.remove('show'),3500);
+  }
+}
+function doLogout(){
+  if(!confirm('Log out of Phoenix Store?'))return;
+  sessionStorage.removeItem(SESSION_KEY);
+  document.getElementById('loginUser').value='';
+  document.getElementById('loginPass').value='';
+  document.getElementById('loginScreen').style.display='flex';
+}
+
+document.getElementById('btnLogin').addEventListener('click',doLogin);
+document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+document.getElementById('loginUser').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass').focus();});
+document.getElementById('btnLogout').addEventListener('click',doLogout);
+document.getElementById('btnLogoutM').addEventListener('click',doLogout);
+
+/* ─── INIT CHECK ─── */
+if(!checkSession()){
+  document.getElementById('loginScreen').style.display='flex';
+}else{
+  document.getElementById('loginScreen').style.display='none';
+}
+
 /* ─── STORAGE ─── */
 const DB_KEY='scannerDB_v3', LOGS_KEY='scannerLogs_v1';
 const SAMPLES=[
@@ -572,7 +682,7 @@ function showPage(page){
 const HEIGHTS=[48,60,36,52,40,56,30,64,44,50,38,56,42,60,34,48,52,40,62,46,36,54,48,60,38];
 function renderBarcodeVis(code){
   ['barcodeVis','barcodeVisM'].forEach(id=>{
-    const vis=document.getElementById(id); if(!vis)return;
+    const vis=document.getElementById(id);if(!vis)return;
     vis.innerHTML='';
     HEIGHTS.forEach(h=>{const b=document.createElement('div');b.className='bar';b.style.height=h+'px';vis.appendChild(b);});
   });
@@ -601,10 +711,8 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 /* ─── RENDER TABLE ─── */
 let filterQuery='';
 function renderTable(){
-  const db=getDB(), q=filterQuery.trim().toLowerCase();
+  const db=getDB(),q=filterQuery.trim().toLowerCase();
   const rows=q?db.filter(i=>i.barcode.includes(q)||i.name.toLowerCase().includes(q)||String(i.price).includes(q)):db;
-
-  // Desktop
   document.getElementById('dbCount').textContent=`${db.length} item${db.length!==1?'s':''}`;
   const tbody=document.getElementById('dbTableBody');
   const empty=document.getElementById('emptyState');
@@ -626,8 +734,6 @@ function renderTable(){
         </td></tr>`;
     }).join('');
   }
-
-  // Mobile
   document.getElementById('dbCountM').textContent=db.length;
   const tbodyM=document.getElementById('dbTableBodyM');
   const emptyM=document.getElementById('emptyStateM');
@@ -710,8 +816,6 @@ function changeQty(barcode,delta){
 function renderCart(){
   const totalQty=cart.reduce((s,c)=>s+c.qty,0);
   const subtotal=cart.reduce((s,c)=>s+c.price*c.qty,0);
-
-  // Update both desktop and mobile cart badges/totals
   ['','M'].forEach(sfx=>{
     const qb=document.getElementById('cartQtyBadge'+sfx);
     const tq=document.getElementById('cartTotalQty'+sfx);
@@ -723,7 +827,6 @@ function renderCart(){
     if(st)st.textContent=`$${subtotal.toFixed(2)}`;
     if(ct)ct.textContent=`$${subtotal.toFixed(2)}`;
     if(cf)cf.disabled=cart.length===0;
-
     const container=document.getElementById('cartItems'+sfx);
     const empty=document.getElementById('cartEmpty'+sfx);
     if(!container)return;
@@ -750,8 +853,6 @@ function renderCart(){
       container.appendChild(div);
     });
   });
-
-  // Mobile nav badge
   const badge=document.getElementById('cartNavBadge');
   if(badge){badge.textContent=totalQty;badge.classList.toggle('show',totalQty>0);}
 }
@@ -875,6 +976,7 @@ function highlightRow(barcode){
 
 /* ─── PROCESS SCAN ─── */
 function processScan(code){
+  if(!checkSession())return;
   code=String(code).trim();if(!code)return;
   renderBarcodeVis(code);
   ['lastScanId','lastScanIdM'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=code;});
@@ -897,6 +999,7 @@ function processScan(code){
 /* ─── SCANNER HOOK ─── */
 let scanBuffer='',scanTimer;
 document.addEventListener('keydown',e=>{
+  if(!checkSession())return;
   const tag=document.activeElement.tagName;
   if(tag==='INPUT'||tag==='TEXTAREA')return;
   if(e.key==='Enter'){if(scanBuffer.length>=4)processScan(scanBuffer);scanBuffer='';clearTimeout(scanTimer);return;}
@@ -911,7 +1014,9 @@ document.getElementById('btnSimulate').addEventListener('click',doSimulate);
 document.getElementById('btnSimulateM').addEventListener('click',doSimulate);
 
 /* ─── INIT ─── */
-renderBarcodeVis('');renderTable();renderCart();
+if(checkSession()){
+  renderBarcodeVis('');renderTable();renderCart();
+}
 </script>
 </body>
 </html>
