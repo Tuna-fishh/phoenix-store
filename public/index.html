@@ -367,6 +367,92 @@ tbody td{padding:9px 10px;vertical-align:middle}
 .stat-chip .sc-label{font-size:9px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text3)}
 .stat-chip .sc-val{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--accent2)}
 
+/* ═══ SETTINGS MODAL ═══ */
+.settings-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text3);font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:6px 12px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.settings-btn:hover{border-color:var(--accent);color:var(--accent)}
+.settings-btn svg{width:14px;height:14px}
+.settings-section{margin-bottom:18px}
+.settings-section-title{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.settings-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.settings-item:last-child{border-bottom:none}
+.settings-item-info{display:flex;flex-direction:column;gap:2px}
+.settings-item-label{font-size:13px;font-weight:600;color:var(--text)}
+.settings-item-sub{font-size:11px;color:var(--text3);font-family:var(--mono)}
+.settings-item-action{flex-shrink:0}
+.btn-settings-action{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text2);font-family:var(--sans);font-size:11px;font-weight:700;padding:7px 14px;cursor:pointer;transition:all .2s}
+.btn-settings-action:hover{border-color:var(--accent);color:var(--accent)}
+.btn-settings-action.danger{border-color:rgba(239,68,68,.35);color:var(--danger)}
+.btn-settings-action.danger:hover{background:rgba(239,68,68,.1)}
+.settings-badge{background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);border-radius:10px;font-family:var(--mono);font-size:10px;color:var(--accent2);padding:2px 8px}
+.settings-badge.off{background:rgba(100,116,139,.12);border-color:var(--border2);color:var(--text3)}
+
+/* ═══ 2FA MODAL ═══ */
+.twofa-toggle{display:flex;gap:8px;margin-bottom:16px}
+.twofa-tab{flex:1;padding:9px;border:1px solid var(--border2);border-radius:var(--rs);background:var(--surface2);color:var(--text3);font-family:var(--sans);font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center}
+.twofa-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.twofa-info{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:var(--rs);padding:10px 13px;font-size:11px;color:var(--text2);margin-bottom:14px;line-height:1.5}
+.twofa-status{display:flex;align-items:center;gap:8px;padding:10px;background:var(--surface2);border-radius:var(--rs);border:1px solid var(--border);margin-bottom:12px}
+.twofa-status-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.twofa-status-icon.enabled{background:rgba(16,185,129,.15)}
+.twofa-status-icon.disabled{background:var(--surface3)}
+.twofa-status-text{flex:1}
+.twofa-status-label{font-size:12px;font-weight:700;color:var(--text)}
+.twofa-status-sub{font-size:10px;color:var(--text3);font-family:var(--mono)}
+
+/* ═══ FORGOT PASSWORD MODAL ═══ */
+.fp-step{display:none}
+.fp-step.active{display:block}
+.fp-method-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.fp-method-card{border:2px solid var(--border2);border-radius:10px;padding:14px;cursor:pointer;transition:all .2s;text-align:center;background:var(--surface2)}
+.fp-method-card:hover{border-color:var(--accent)}
+.fp-method-card.selected{border-color:var(--accent);background:var(--accent-glow)}
+.fp-method-icon{font-size:24px;margin-bottom:6px}
+.fp-method-label{font-size:12px;font-weight:700;color:var(--text)}
+.fp-method-sub{font-size:10px;color:var(--text3);margin-top:2px;font-family:var(--mono)}
+.fp-otp-display{display:flex;gap:10px;justify-content:center;margin:16px 0}
+.fp-otp-box{width:42px;height:52px;background:var(--surface2);border:2px solid var(--border2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:22px;font-weight:700;color:var(--accent);transition:border-color .2s}
+.fp-otp-box.filled{border-color:var(--accent)}
+.fp-otp-input{position:absolute;opacity:0;width:1px;height:1px}
+.fp-otp-area{position:relative;display:flex;justify-content:center;cursor:text}
+.fp-step-title{font-size:14px;font-weight:800;color:var(--text);margin-bottom:4px}
+.fp-step-sub{font-size:12px;color:var(--text3);margin-bottom:16px;line-height:1.4}
+.fp-progress{display:flex;gap:6px;margin-bottom:18px}
+.fp-prog-dot{flex:1;height:3px;background:var(--border2);border-radius:2px;transition:background .3s}
+.fp-prog-dot.done{background:var(--accent)}
+.btn-fp-next{width:100%;background:linear-gradient(135deg,#1e40af,#2563eb);border:1px solid rgba(59,130,246,.4);border-radius:var(--rs);color:#fff;font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:12px;cursor:pointer;transition:all .2s;margin-top:8px}
+.btn-fp-next:hover{box-shadow:0 4px 14px rgba(59,130,246,.35)}
+.btn-fp-next:disabled{opacity:.4;cursor:not-allowed}
+.fp-link{display:block;text-align:center;margin-top:10px;font-size:11px;color:var(--text3);cursor:pointer;transition:color .2s}
+.fp-link:hover{color:var(--accent)}
+.fp-success-icon{width:64px;height:64px;background:rgba(16,185,129,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 16px}
+
+/* ═══ CAMERA SCANNER ═══ */
+.cam-scanner-btn{display:block;margin:0 12px 10px;width:calc(100% - 24px);background:linear-gradient(135deg,#1e3a5f,#1a56a0);border:1px solid rgba(59,130,246,.35);border-radius:10px;color:#fff;font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:13px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.cam-scanner-btn:active{transform:scale(.97)}
+.cam-scanner-btn svg{width:18px;height:18px}
+.cam-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:2000;display:none;flex-direction:column;align-items:center;justify-content:center}
+.cam-overlay.open{display:flex}
+.cam-container{position:relative;width:min(90vw,340px);aspect-ratio:1;border-radius:16px;overflow:hidden;background:#000}
+.cam-video{width:100%;height:100%;object-fit:cover}
+.cam-corners{position:absolute;inset:0;pointer-events:none}
+.cam-corner{position:absolute;width:24px;height:24px}
+.cam-corner.tl{top:12px;left:12px;border-top:3px solid var(--scan-green);border-left:3px solid var(--scan-green)}
+.cam-corner.tr{top:12px;right:12px;border-top:3px solid var(--scan-green);border-right:3px solid var(--scan-green)}
+.cam-corner.bl{bottom:12px;left:12px;border-bottom:3px solid var(--scan-green);border-left:3px solid var(--scan-green)}
+.cam-corner.br{bottom:12px;right:12px;border-bottom:3px solid var(--scan-green);border-right:3px solid var(--scan-green)}
+.cam-scanline{position:absolute;left:12px;right:12px;height:2px;background:linear-gradient(90deg,transparent,var(--scan-green),transparent);box-shadow:0 0 10px var(--scan-green);animation:scanline 2s ease-in-out infinite}
+.cam-status{margin-top:18px;font-family:var(--mono);font-size:13px;color:var(--scan-green);text-align:center;letter-spacing:.06em}
+.cam-hint{margin-top:8px;font-size:11px;color:var(--text3);text-align:center}
+.cam-close{margin-top:20px;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:var(--sans);font-size:12px;font-weight:700;padding:10px 32px;cursor:pointer;transition:all .2s}
+.cam-close:active{transform:scale(.97)}
+.cam-found{animation:camFound .5s ease}
+@keyframes camFound{0%{background:rgba(34,197,94,.4)}100%{background:rgba(0,0,0,.92)}}
+
+/* ═══ MOBILE SETTINGS BTN ═══ */
+.m-settings-fab{position:fixed;bottom:calc(64px + env(safe-area-inset-bottom) + 16px);left:16px;width:44px;height:44px;background:var(--surface2);border:1px solid var(--border2);border-radius:50%;color:var(--text2);font-size:20px;cursor:pointer;z-index:150;display:none;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.m-settings-fab:active{transform:scale(.93)}
+.m-settings-fab.visible{display:flex}
+
 /* ═══ SCROLLBAR ═══ */
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -443,6 +529,9 @@ tbody td{padding:9px 10px;vertical-align:middle}
       <input type="password" id="loginPass" placeholder="Enter password…" autocomplete="current-password">
     </div>
     <button class="btn-login" id="btnLogin">→ Sign In</button>
+    <div style="text-align:center;margin-top:12px">
+      <span id="btnForgotPwLink" style="font-family:var(--mono);font-size:11px;color:var(--accent);cursor:pointer;text-decoration:underline;opacity:.8">Forgot password?</span>
+    </div>
     <div class="login-footer">Phoenix Store v1.0 — Authorized access only</div>
   </div>
 </div>
@@ -461,6 +550,10 @@ tbody td{padding:9px 10px;vertical-align:middle}
       <input type="text" id="globalSearch" placeholder="Search…" autocomplete="off">
     </div>
     <button class="btn-logout" id="btnLogout" style="display:none">⏻ Logout</button>
+    <button class="settings-btn" id="btnSettings" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      Settings
+    </button>
   </div>
 </header>
 
@@ -581,6 +674,10 @@ tbody td{padding:9px 10px;vertical-align:middle}
       <div class="scan-item" id="lastScanItemM">[No scan yet]</div>
     </div>
     <button class="m-btn-sim" id="btnSimulateM">▶ Simulate Scan</button>
+    <button class="cam-scanner-btn" id="btnCamScan">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      📷 Scan with Camera
+    </button>
   </div>
 
   <div class="m-form-card">
@@ -613,7 +710,7 @@ tbody td{padding:9px 10px;vertical-align:middle}
   </div>
 
   <div style="text-align:center;padding-bottom:4px">
-    <button class="btn-logout" id="btnLogoutM" style="font-size:11px;padding:9px 22px">⏻ Logout</button>
+    <button class="btn-settings-action" id="btnSettingsM" style="font-size:11px;padding:9px 22px;width:100%;border-radius:10px">⚙️ Settings</button>
   </div>
 </div>
 
@@ -735,6 +832,253 @@ tbody td{padding:9px 10px;vertical-align:middle}
   </div>
 </div>
 
+<!-- ═══════════ CAMERA SCANNER OVERLAY ═══════════ -->
+<div class="cam-overlay" id="camOverlay">
+  <div class="cam-container" id="camContainer">
+    <video class="cam-video" id="camVideo" playsinline autoplay muted></video>
+    <div class="cam-corners">
+      <div class="cam-corner tl"></div>
+      <div class="cam-corner tr"></div>
+      <div class="cam-corner bl"></div>
+      <div class="cam-corner br"></div>
+    </div>
+    <div class="cam-scanline"></div>
+  </div>
+  <div class="cam-status" id="camStatus">🔍 Searching for barcode…</div>
+  <div class="cam-hint">Hold barcode steady inside the frame</div>
+  <button class="cam-close" id="camClose">✕ Close Camera</button>
+</div>
+
+<!-- ═══════════ SETTINGS MODAL ═══════════ -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal-box" style="max-width:420px">
+    <span class="modal-drag"></span>
+    <div class="modal-hd">
+      ⚙️ Settings
+      <button class="modal-close" onclick="closeModal('settingsModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="settings-section">
+        <div class="settings-section-title">Account</div>
+        <div class="settings-item">
+          <div class="settings-item-info">
+            <div class="settings-item-label">Username</div>
+            <div class="settings-item-sub" id="settingsUsername">admin</div>
+          </div>
+        </div>
+        <div class="settings-item">
+          <div class="settings-item-info">
+            <div class="settings-item-label">Change Password</div>
+            <div class="settings-item-sub">Update your login password</div>
+          </div>
+          <div class="settings-item-action">
+            <button class="btn-settings-action" id="btnChangePass">Change</button>
+          </div>
+        </div>
+        <div class="settings-item">
+          <div class="settings-item-info">
+            <div class="settings-item-label">Logout</div>
+            <div class="settings-item-sub">End your current session</div>
+          </div>
+          <div class="settings-item-action">
+            <button class="btn-settings-action danger" id="btnLogoutSettings">Logout</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">Security</div>
+        <div class="settings-item">
+          <div class="settings-item-info">
+            <div class="settings-item-label">Two-Factor Authentication</div>
+            <div class="settings-item-sub" id="twoFAStatusText">Not configured</div>
+          </div>
+          <div class="settings-item-action">
+            <button class="btn-settings-action" id="btnSetup2FA">Setup</button>
+          </div>
+        </div>
+        <div class="settings-item">
+          <div class="settings-item-info">
+            <div class="settings-item-label">Recovery Method</div>
+            <div class="settings-item-sub" id="recoveryStatusText">Not set</div>
+          </div>
+          <div class="settings-item-action">
+            <button class="btn-settings-action" id="btnSetupRecovery">Configure</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ CHANGE PASSWORD MODAL ═══════════ -->
+<div class="modal-overlay" id="changePassModal">
+  <div class="modal-box" style="max-width:380px">
+    <span class="modal-drag"></span>
+    <div class="modal-hd">
+      🔑 Change Password
+      <button class="modal-close" onclick="closeModal('changePassModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-row">
+        <label>Current Password</label>
+        <input type="password" id="cpCurrent" placeholder="Enter current password…">
+      </div>
+      <div class="modal-row">
+        <label>New Password</label>
+        <input type="password" id="cpNew" placeholder="Enter new password…">
+      </div>
+      <div class="modal-row">
+        <label>Confirm New Password</label>
+        <input type="password" id="cpConfirm" placeholder="Repeat new password…">
+      </div>
+      <div class="login-err" id="cpErr" style="margin-top:4px"></div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="closeModal('changePassModal')">Cancel</button>
+      <button class="btn-update" id="btnSavePass">Save Password</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ 2FA SETUP MODAL ═══════════ -->
+<div class="modal-overlay" id="twoFAModal">
+  <div class="modal-box" style="max-width:400px">
+    <span class="modal-drag"></span>
+    <div class="modal-hd">
+      🔐 Two-Factor Authentication
+      <button class="modal-close" onclick="closeModal('twoFAModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="twofa-toggle">
+        <button class="twofa-tab active" id="twoFATabPhone" onclick="switch2FATab('phone')">📱 Phone Number</button>
+        <button class="twofa-tab" id="twoFATabEmail" onclick="switch2FATab('email')">📧 Email</button>
+      </div>
+
+      <!-- Phone 2FA -->
+      <div id="twoFAPhoneSection">
+        <div class="twofa-info">A verification code will be sent to your phone number each time you log in.</div>
+        <div class="twofa-status" id="twoFAPhoneStatus">
+          <div class="twofa-status-icon disabled" id="twoFAPhoneIcon">📵</div>
+          <div class="twofa-status-text">
+            <div class="twofa-status-label" id="twoFAPhoneLabel">Phone 2FA not enabled</div>
+            <div class="twofa-status-sub" id="twoFAPhoneVal">No phone number saved</div>
+          </div>
+        </div>
+        <div class="modal-row">
+          <label>Phone Number</label>
+          <input type="tel" id="twoFAPhone" placeholder="+1 555 000 0000" autocomplete="tel">
+        </div>
+        <div class="login-err" id="twoFAPhoneErr"></div>
+      </div>
+
+      <!-- Email 2FA -->
+      <div id="twoFAEmailSection" style="display:none">
+        <div class="twofa-info">A verification code will be sent to your email address each time you log in.</div>
+        <div class="twofa-status" id="twoFAEmailStatus">
+          <div class="twofa-status-icon disabled" id="twoFAEmailIcon">📭</div>
+          <div class="twofa-status-text">
+            <div class="twofa-status-label" id="twoFAEmailLabel">Email 2FA not enabled</div>
+            <div class="twofa-status-sub" id="twoFAEmailVal">No email address saved</div>
+          </div>
+        </div>
+        <div class="modal-row">
+          <label>Email Address</label>
+          <input type="email" id="twoFAEmail" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="login-err" id="twoFAEmailErr"></div>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" id="btnDisable2FA">Disable</button>
+      <button class="btn-update" id="btnSave2FA">Save & Enable</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ FORGOT PASSWORD MODAL ═══════════ -->
+<div class="modal-overlay" id="forgotPassModal">
+  <div class="modal-box" style="max-width:380px">
+    <span class="modal-drag"></span>
+    <div class="modal-hd">
+      🔓 Forgot Password
+      <button class="modal-close" id="btnCloseForgot">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="fp-progress">
+        <div class="fp-prog-dot done" id="fpDot1"></div>
+        <div class="fp-prog-dot" id="fpDot2"></div>
+        <div class="fp-prog-dot" id="fpDot3"></div>
+      </div>
+
+      <!-- Step 1: Choose method -->
+      <div class="fp-step active" id="fpStep1">
+        <div class="fp-step-title">Reset your password</div>
+        <div class="fp-step-sub">Choose how you'd like to receive your recovery code</div>
+        <div class="fp-method-grid">
+          <div class="fp-method-card" id="fpMethodPhone" onclick="selectFPMethod('phone')">
+            <div class="fp-method-icon">📱</div>
+            <div class="fp-method-label">Phone</div>
+            <div class="fp-method-sub" id="fpPhoneMask">Not set up</div>
+          </div>
+          <div class="fp-method-card" id="fpMethodEmail" onclick="selectFPMethod('email')">
+            <div class="fp-method-icon">📧</div>
+            <div class="fp-method-label">Email</div>
+            <div class="fp-method-sub" id="fpEmailMask">Not set up</div>
+          </div>
+        </div>
+        <div class="login-err" id="fpStep1Err"></div>
+        <button class="btn-fp-next" id="btnFpNext1" disabled onclick="fpGoStep2()">Send Code →</button>
+        <span class="fp-link" onclick="closeModal('forgotPassModal')">Back to login</span>
+      </div>
+
+      <!-- Step 2: Enter code -->
+      <div class="fp-step" id="fpStep2">
+        <div class="fp-step-title">Enter verification code</div>
+        <div class="fp-step-sub" id="fpStep2Sub">We've sent a 6-digit code to your device.</div>
+        <div class="fp-otp-area" id="fpOtpArea" onclick="document.getElementById('fpOtpInput').focus()">
+          <div class="fp-otp-display" id="fpOtpDisplay">
+            <div class="fp-otp-box" id="fpB0">—</div>
+            <div class="fp-otp-box" id="fpB1">—</div>
+            <div class="fp-otp-box" id="fpB2">—</div>
+            <div class="fp-otp-box" id="fpB3">—</div>
+            <div class="fp-otp-box" id="fpB4">—</div>
+            <div class="fp-otp-box" id="fpB5">—</div>
+          </div>
+          <input class="fp-otp-input" id="fpOtpInput" type="text" inputmode="numeric" maxlength="6" autocomplete="one-time-code">
+        </div>
+        <div class="login-err" id="fpStep2Err" style="margin-top:8px"></div>
+        <button class="btn-fp-next" id="btnFpNext2" onclick="fpGoStep3()">Verify Code →</button>
+        <span class="fp-link" id="fpResend">Didn't receive it? Resend code</span>
+      </div>
+
+      <!-- Step 3: New password -->
+      <div class="fp-step" id="fpStep3">
+        <div class="fp-step-title">Set new password</div>
+        <div class="fp-step-sub">Choose a strong password for your account.</div>
+        <div class="modal-row">
+          <label>New Password</label>
+          <input type="password" id="fpNewPass" placeholder="New password…">
+        </div>
+        <div class="modal-row">
+          <label>Confirm Password</label>
+          <input type="password" id="fpConfPass" placeholder="Confirm new password…">
+        </div>
+        <div class="login-err" id="fpStep3Err"></div>
+        <button class="btn-fp-next" onclick="fpFinish()">✓ Reset Password</button>
+      </div>
+
+      <!-- Step 4: Success -->
+      <div class="fp-step" id="fpStep4">
+        <div class="fp-success-icon">✅</div>
+        <div class="fp-step-title" style="text-align:center">Password Reset!</div>
+        <div class="fp-step-sub" style="text-align:center">Your password has been updated successfully. You can now log in with your new password.</div>
+        <button class="btn-fp-next" onclick="closeModal('forgotPassModal')">← Back to Login</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ─── API AUTH ─── */
 let token=localStorage.getItem('ph_token')||'';
@@ -759,7 +1103,11 @@ async function doLogin(){
     const d=await r.json();
     if(!r.ok){err.classList.add('show');setTimeout(()=>err.classList.remove('show'),3500);document.getElementById('loginPass').value='';document.getElementById('loginPass').focus();return;}
     token=d.token;localStorage.setItem('ph_token',token);
+    // Save username for settings panel
+    const acct=JSON.parse(localStorage.getItem('phoenixAcct')||'{}');
+    acct.username=u;localStorage.setItem('phoenixAcct',JSON.stringify(acct));
     document.getElementById('loginScreen').style.display='none';
+    document.getElementById('btnSettings').style.display='flex';
     await loadDBFromAPI();renderBarcodeVis('');renderCart();
   }catch(e){err.classList.add('show');setTimeout(()=>err.classList.remove('show'),3500);}
 }
@@ -769,20 +1117,23 @@ function doLogout(){
   token='';localStorage.removeItem('ph_token');
   document.getElementById('loginUser').value='';
   document.getElementById('loginPass').value='';
+  document.getElementById('btnSettings').style.display='none';
   document.getElementById('loginScreen').style.display='flex';
+  cart=[];renderCart();
 }
 
 document.getElementById('btnLogin').addEventListener('click',doLogin);
 document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 document.getElementById('loginUser').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass').focus();});
-document.getElementById('btnLogout').addEventListener('click',doLogout);
-document.getElementById('btnLogoutM').addEventListener('click',doLogout);
+// btnLogoutM no longer exists, handled via settings modal
 
 /* ─── INIT CHECK ─── */
 if(!checkSession()){
   document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('btnSettings').style.display='none';
 }else{
   document.getElementById('loginScreen').style.display='none';
+  document.getElementById('btnSettings').style.display='flex';
   loadDBFromAPI().then(()=>{renderBarcodeVis('');renderCart();});
 }
 
@@ -1215,10 +1566,312 @@ function doSimulate(){processScan(DEMO[demoIdx%DEMO.length]);demoIdx++;}
 document.getElementById('btnSimulate').addEventListener('click',doSimulate);
 document.getElementById('btnSimulateM').addEventListener('click',doSimulate);
 
-/* ─── INIT ─── */
-if(checkSession()){
-  renderBarcodeVis('');renderCart();
+/* ─── SETTINGS ─── */
+function openSettingsModal(){
+  const acct=JSON.parse(localStorage.getItem('phoenixAcct')||'{}');
+  document.getElementById('settingsUsername').textContent=acct.username||'admin';
+  updateSecurityStatus();
+  openModal('settingsModal');
 }
+function updateSecurityStatus(){
+  const s=JSON.parse(localStorage.getItem('phoenix2FA')||'{}');
+  const r=JSON.parse(localStorage.getItem('phoenixRecovery')||'{}');
+  const t=document.getElementById('twoFAStatusText');
+  const rv=document.getElementById('recoveryStatusText');
+  if(t){
+    if(s.phoneEnabled&&s.phone) t.textContent='📱 Phone: '+maskPhone(s.phone);
+    else if(s.emailEnabled&&s.email) t.textContent='📧 Email: '+maskEmail(s.email);
+    else t.textContent='Not configured';
+  }
+  if(rv){
+    if(r.phone) rv.textContent='📱 '+maskPhone(r.phone);
+    else if(r.email) rv.textContent='📧 '+maskEmail(r.email);
+    else rv.textContent='Not set';
+  }
+}
+function maskPhone(p){return p.slice(0,-4).replace(/./g,'*')+p.slice(-4)}
+function maskEmail(e){const[u,d]=e.split('@');return u.slice(0,2)+'***@'+d}
+
+document.getElementById('btnSettings').addEventListener('click',openSettingsModal);
+document.getElementById('btnSettingsM').addEventListener('click',openSettingsModal);
+document.getElementById('btnLogoutSettings').addEventListener('click',()=>{closeModal('settingsModal');doLogout();});
+
+// btn-logout in header (desktop) - use shared doLogout
+document.getElementById('btnLogout').addEventListener('click',doLogout);
+
+/* ─── CHANGE PASSWORD ─── */
+document.getElementById('btnChangePass').addEventListener('click',()=>{
+  closeModal('settingsModal');
+  document.getElementById('cpCurrent').value='';
+  document.getElementById('cpNew').value='';
+  document.getElementById('cpConfirm').value='';
+  const e=document.getElementById('cpErr');e.textContent='';e.classList.remove('show');
+  openModal('changePassModal');
+});
+document.getElementById('btnSavePass').addEventListener('click',()=>{
+  const cur=document.getElementById('cpCurrent').value;
+  const nw=document.getElementById('cpNew').value;
+  const cf=document.getElementById('cpConfirm').value;
+  const err=document.getElementById('cpErr');
+  err.classList.remove('show');
+  const acct=JSON.parse(localStorage.getItem('phoenixAcct')||'{}');
+  const storedPass=acct.password||'admin';
+  if(cur!==storedPass){err.textContent='Current password is incorrect.';err.classList.add('show');return;}
+  if(nw.length<4){err.textContent='New password must be at least 4 characters.';err.classList.add('show');return;}
+  if(nw!==cf){err.textContent='Passwords do not match.';err.classList.add('show');return;}
+  acct.password=nw;
+  localStorage.setItem('phoenixAcct',JSON.stringify(acct));
+  closeModal('changePassModal');
+  showToast('✅ Password updated!','success');
+});
+
+/* ─── 2FA SETUP ─── */
+document.getElementById('btnSetup2FA').addEventListener('click',()=>{
+  closeModal('settingsModal');
+  load2FAForm();
+  openModal('twoFAModal');
+});
+document.getElementById('btnSetupRecovery').addEventListener('click',()=>{
+  closeModal('settingsModal');
+  load2FAForm();
+  openModal('twoFAModal');
+});
+function switch2FATab(tab){
+  document.getElementById('twoFATabPhone').classList.toggle('active',tab==='phone');
+  document.getElementById('twoFATabEmail').classList.toggle('active',tab==='email');
+  document.getElementById('twoFAPhoneSection').style.display=tab==='phone'?'block':'none';
+  document.getElementById('twoFAEmailSection').style.display=tab==='email'?'block':'none';
+}
+function load2FAForm(){
+  const s=JSON.parse(localStorage.getItem('phoenix2FA')||'{}');
+  document.getElementById('twoFAPhone').value=s.phone||'';
+  document.getElementById('twoFAEmail').value=s.email||'';
+  update2FAStatus(s);
+}
+function update2FAStatus(s){
+  const pi=document.getElementById('twoFAPhoneIcon');
+  const pl=document.getElementById('twoFAPhoneLabel');
+  const pv=document.getElementById('twoFAPhoneVal');
+  const ei=document.getElementById('twoFAEmailIcon');
+  const el=document.getElementById('twoFAEmailLabel');
+  const ev=document.getElementById('twoFAEmailVal');
+  if(s.phoneEnabled&&s.phone){
+    pi.textContent='📱';pi.className='twofa-status-icon enabled';
+    pl.textContent='Phone 2FA ENABLED';pv.textContent=maskPhone(s.phone);
+  }else{
+    pi.textContent='📵';pi.className='twofa-status-icon disabled';
+    pl.textContent='Phone 2FA not enabled';pv.textContent=s.phone?maskPhone(s.phone):'No phone number saved';
+  }
+  if(s.emailEnabled&&s.email){
+    ei.textContent='📧';ei.className='twofa-status-icon enabled';
+    el.textContent='Email 2FA ENABLED';ev.textContent=maskEmail(s.email);
+  }else{
+    ei.textContent='📭';ei.className='twofa-status-icon disabled';
+    el.textContent='Email 2FA not enabled';ev.textContent=s.email?maskEmail(s.email):'No email address saved';
+  }
+}
+document.getElementById('btnSave2FA').addEventListener('click',()=>{
+  const s=JSON.parse(localStorage.getItem('phoenix2FA')||'{}');
+  const phoneEl=document.getElementById('twoFAPhone');
+  const emailEl=document.getElementById('twoFAEmail');
+  const isPhone=document.getElementById('twoFATabPhone').classList.contains('active');
+  const errId=isPhone?'twoFAPhoneErr':'twoFAEmailErr';
+  const err=document.getElementById(errId);err.textContent='';err.classList.remove('show');
+  if(isPhone){
+    const ph=phoneEl.value.trim();
+    if(!ph){err.textContent='Please enter a phone number.';err.classList.add('show');return;}
+    s.phone=ph;s.phoneEnabled=true;
+    // store also as recovery
+    const r=JSON.parse(localStorage.getItem('phoenixRecovery')||'{}');r.phone=ph;localStorage.setItem('phoenixRecovery',JSON.stringify(r));
+  }else{
+    const em=emailEl.value.trim();
+    if(!em||!em.includes('@')){err.textContent='Please enter a valid email.';err.classList.add('show');return;}
+    s.email=em;s.emailEnabled=true;
+    const r=JSON.parse(localStorage.getItem('phoenixRecovery')||'{}');r.email=em;localStorage.setItem('phoenixRecovery',JSON.stringify(r));
+  }
+  localStorage.setItem('phoenix2FA',JSON.stringify(s));
+  update2FAStatus(s);
+  updateSecurityStatus();
+  showToast('✅ 2FA enabled!','success');
+  closeModal('twoFAModal');
+});
+document.getElementById('btnDisable2FA').addEventListener('click',()=>{
+  const s=JSON.parse(localStorage.getItem('phoenix2FA')||'{}');
+  const isPhone=document.getElementById('twoFATabPhone').classList.contains('active');
+  if(isPhone)s.phoneEnabled=false; else s.emailEnabled=false;
+  localStorage.setItem('phoenix2FA',JSON.stringify(s));
+  update2FAStatus(s);updateSecurityStatus();
+  showToast('2FA disabled.','info');closeModal('twoFAModal');
+});
+
+/* ─── FORGOT PASSWORD ─── */
+let fpMethod=null;
+let fpOtpCode='';
+document.getElementById('btnForgotPwLink').addEventListener('click',()=>{
+  fpReset();openModal('forgotPassModal');
+});
+document.getElementById('btnCloseForgot').addEventListener('click',()=>closeModal('forgotPassModal'));
+function fpReset(){
+  fpMethod=null;fpOtpCode='';
+  ['fpStep1','fpStep2','fpStep3','fpStep4'].forEach((id,i)=>{
+    document.getElementById(id).classList.toggle('active',i===0);
+  });
+  ['fpDot1','fpDot2','fpDot3'].forEach((id,i)=>{
+    document.getElementById(id).classList.toggle('done',i===0);
+  });
+  document.getElementById('fpMethodPhone').classList.remove('selected');
+  document.getElementById('fpMethodEmail').classList.remove('selected');
+  document.getElementById('btnFpNext1').disabled=true;
+  document.getElementById('fpStep1Err').textContent='';
+  document.getElementById('fpStep1Err').classList.remove('show');
+  // Show masked contact info
+  const r=JSON.parse(localStorage.getItem('phoenixRecovery')||'{}');
+  document.getElementById('fpPhoneMask').textContent=r.phone?maskPhone(r.phone):'Not set up';
+  document.getElementById('fpEmailMask').textContent=r.email?maskEmail(r.email):'Not set up';
+}
+function selectFPMethod(method){
+  const r=JSON.parse(localStorage.getItem('phoenixRecovery')||'{}');
+  const err=document.getElementById('fpStep1Err');
+  if(method==='phone'&&!r.phone){err.textContent='No phone number set up for recovery. Set it up in Settings → 2FA.';err.classList.add('show');return;}
+  if(method==='email'&&!r.email){err.textContent='No email set up for recovery. Set it up in Settings → 2FA.';err.classList.add('show');return;}
+  err.classList.remove('show');
+  fpMethod=method;
+  document.getElementById('fpMethodPhone').classList.toggle('selected',method==='phone');
+  document.getElementById('fpMethodEmail').classList.toggle('selected',method==='email');
+  document.getElementById('btnFpNext1').disabled=false;
+}
+function fpGoStep2(){
+  const r=JSON.parse(localStorage.getItem('phoenixRecovery')||'{}');
+  // Generate a 6-digit code and store it (in a real app this would be sent via SMS/email)
+  fpOtpCode=String(Math.floor(100000+Math.random()*900000));
+  // Show it in a toast (simulating delivery since we can't actually send SMS/email)
+  const dest=fpMethod==='phone'?maskPhone(r.phone):maskEmail(r.email);
+  showToast(`📨 Code sent to ${dest}: ${fpOtpCode}`,'info');
+  document.getElementById('fpStep2Sub').textContent=`Code sent to: ${dest}`;
+  // Reset OTP boxes
+  document.getElementById('fpOtpInput').value='';
+  updateOtpBoxes('');
+  fpSetStep(2);
+  setTimeout(()=>document.getElementById('fpOtpInput').focus(),200);
+}
+document.getElementById('fpOtpInput').addEventListener('input',e=>{
+  const v=e.target.value.replace(/\D/g,'').slice(0,6);
+  e.target.value=v;updateOtpBoxes(v);
+});
+function updateOtpBoxes(v){
+  for(let i=0;i<6;i++){
+    const b=document.getElementById('fpB'+i);
+    b.textContent=v[i]||'—';
+    b.classList.toggle('filled',!!v[i]);
+  }
+}
+function fpGoStep3(){
+  const entered=document.getElementById('fpOtpInput').value;
+  const err=document.getElementById('fpStep2Err');
+  if(entered!==fpOtpCode){err.textContent='Incorrect code. Please try again.';err.classList.add('show');return;}
+  err.classList.remove('show');
+  fpSetStep(3);
+}
+function fpFinish(){
+  const np=document.getElementById('fpNewPass').value;
+  const cp=document.getElementById('fpConfPass').value;
+  const err=document.getElementById('fpStep3Err');
+  err.classList.remove('show');
+  if(np.length<4){err.textContent='Password must be at least 4 characters.';err.classList.add('show');return;}
+  if(np!==cp){err.textContent='Passwords do not match.';err.classList.add('show');return;}
+  const acct=JSON.parse(localStorage.getItem('phoenixAcct')||'{}');
+  acct.password=np;localStorage.setItem('phoenixAcct',JSON.stringify(acct));
+  fpSetStep(4);
+}
+function fpSetStep(n){
+  for(let i=1;i<=4;i++) document.getElementById('fpStep'+i).classList.toggle('active',i===n);
+  for(let i=1;i<=3;i++) document.getElementById('fpDot'+i).classList.toggle('done',i<n);
+}
+document.getElementById('fpResend').addEventListener('click',()=>{
+  fpOtpCode=String(Math.floor(100000+Math.random()*900000));
+  const r=JSON.parse(localStorage.getItem('phoenixRecovery')||'{}');
+  const dest=fpMethod==='phone'?maskPhone(r.phone):maskEmail(r.email);
+  showToast(`📨 New code sent to ${dest}: ${fpOtpCode}`,'info');
+  document.getElementById('fpOtpInput').value='';updateOtpBoxes('');
+});
+
+/* ─── CAMERA BARCODE SCANNER ─── */
+let camStream=null;
+let camAnimFrame=null;
+let camCanvas=null;
+let camCtx=null;
+
+async function openCameraScanner(){
+  const overlay=document.getElementById('camOverlay');
+  overlay.classList.add('open');
+  document.getElementById('camStatus').textContent='🔍 Starting camera…';
+  try{
+    camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}}});
+    const video=document.getElementById('camVideo');
+    video.srcObject=camStream;
+    await video.play();
+    // Wait for ZXing to load
+    if(!window.ZXing){
+      document.getElementById('camStatus').textContent='📦 Loading scanner library…';
+      await loadZXing();
+    }
+    document.getElementById('camStatus').textContent='🔍 Searching for barcode…';
+    camCanvas=document.createElement('canvas');
+    camCtx=camCanvas.getContext('2d');
+    scanFrame();
+  }catch(err){
+    document.getElementById('camStatus').textContent='❌ Camera access denied. Check browser permissions.';
+  }
+}
+
+function loadZXing(){
+  return new Promise((res,rej)=>{
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/zxing-js/0.18.6/index.min.js';
+    s.onload=res;s.onerror=rej;
+    document.head.appendChild(s);
+  });
+}
+
+function scanFrame(){
+  const video=document.getElementById('camVideo');
+  if(!video.videoWidth){camAnimFrame=requestAnimationFrame(scanFrame);return;}
+  camCanvas.width=video.videoWidth;
+  camCanvas.height=video.videoHeight;
+  camCtx.drawImage(video,0,0);
+  try{
+    const hints=new Map();
+    const codeReader=new window.ZXing.BrowserMultiFormatReader();
+    const imgData=camCtx.getImageData(0,0,camCanvas.width,camCanvas.height);
+    const luminance=new window.ZXing.RGBLuminanceSource(imgData.data,camCanvas.width,camCanvas.height);
+    const bitmap=new window.ZXing.BinaryBitmap(new window.ZXing.HybridBinarizer(luminance));
+    const result=new window.ZXing.MultiFormatReader().decode(bitmap);
+    if(result&&result.text){
+      camFoundBarcode(result.text);
+      return;
+    }
+  }catch(e){}
+  camAnimFrame=requestAnimationFrame(scanFrame);
+}
+
+function camFoundBarcode(code){
+  document.getElementById('camOverlay').classList.add('cam-found');
+  document.getElementById('camStatus').textContent='✅ Found: '+code;
+  closeCameraScanner();
+  setTimeout(()=>{processScan(code);},300);
+}
+
+function closeCameraScanner(){
+  if(camAnimFrame){cancelAnimationFrame(camAnimFrame);camAnimFrame=null;}
+  if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}
+  document.getElementById('camVideo').srcObject=null;
+  document.getElementById('camOverlay').classList.remove('open');
+  document.getElementById('camOverlay').classList.remove('cam-found');
+}
+
+document.getElementById('camClose').addEventListener('click',closeCameraScanner);
+document.getElementById('btnCamScan').addEventListener('click',openCameraScanner);
+
 </script>
 </body>
 </html>
