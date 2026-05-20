@@ -856,6 +856,16 @@ tbody td{padding:9px 10px;vertical-align:middle}
         <span class="lbl">Total Amount</span>
         <span class="amt" id="confirmGrandTotal">$0.00</span>
       </div>
+      <div id="confirmChangeRow" style="display:none;margin-top:8px;padding:8px 10px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+          <span style="color:var(--text3)">Cash Given</span>
+          <span style="font-family:var(--mono);font-weight:700;color:var(--text)" id="confirmCashGiven">$0.00</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:800">
+          <span style="color:var(--text2)">Change</span>
+          <span style="font-family:var(--mono);color:var(--accent2)" id="confirmChange">$0.00</span>
+        </div>
+      </div>
     </div>
     <div class="modal-ft">
       <button class="btn-cancel" onclick="closeModal('confirmModal')">Cancel</button>
@@ -1533,6 +1543,17 @@ function openConfirm(){
       <div class="confirm-item-detail">${ci.qty} × $${ci.price.toFixed(2)} = <strong style="color:var(--accent2)">$${(ci.price*ci.qty).toFixed(2)}</strong></div>
     </div>`).join('');
   document.getElementById('confirmGrandTotal').textContent=`$${grand.toFixed(2)}`;
+  // Show cash/change in confirm modal
+  const cashEl=document.getElementById('cashGiven')||document.getElementById('cashGivenM');
+  const cash=parseFloat(cashEl&&cashEl.value)||0;
+  const changeRow=document.getElementById('confirmChangeRow');
+  if(cash>0){
+    changeRow.style.display='block';
+    document.getElementById('confirmCashGiven').textContent=`$${cash.toFixed(2)}`;
+    document.getElementById('confirmChange').textContent=`$${Math.max(0,cash-grand).toFixed(2)}`;
+  }else{
+    changeRow.style.display='none';
+  }
   openModal('confirmModal');
 }
 ['btnConfirm','btnConfirmM'].forEach(id=>{
@@ -1542,11 +1563,18 @@ function openConfirm(){
 document.getElementById('btnBuy').addEventListener('click',async()=>{
   const grand=cart.reduce((s,c)=>s+c.price*c.qty,0);
   const totalQty=cart.reduce((s,c)=>s+c.qty,0);
-  const log={id:'TXN-'+Date.now(),date:new Date().toISOString(),items:cart.map(ci=>({barcode:ci.barcode,name:ci.name,price:ci.price,qty:ci.qty,subtotal:+(ci.price*ci.qty).toFixed(2)})),total:+grand.toFixed(2),totalQty};
+  const cashEl=document.getElementById('cashGiven')||document.getElementById('cashGivenM');
+  const cash=parseFloat(cashEl&&cashEl.value)||0;
+  const change=Math.max(0,cash-grand);
+  const txnId='TXN-'+Date.now();
+  const log={id:txnId,date:new Date().toISOString(),items:cart.map(ci=>({barcode:ci.barcode,name:ci.name,price:ci.price,qty:ci.qty,subtotal:+(ci.price*ci.qty).toFixed(2)})),total:+grand.toFixed(2),totalQty,cash:+cash.toFixed(2),change:+change.toFixed(2)};
   const r=await apiFetch('/api/logs',{method:'POST',body:JSON.stringify(log)});
   if(r&&r.ok){
+    const cartSnap=[...cart];
     closeModal('confirmModal');cart=[];renderCart();await loadDBFromAPI();
     showToast(`✅ Purchase complete — $${grand.toFixed(2)}!`,'success');
+    // Ask to print
+    setTimeout(()=>printReceipt(txnId,cartSnap,grand,cash,change),400);
   }
 });
 
@@ -1887,7 +1915,102 @@ document.getElementById('fpResend').addEventListener('click',()=>{
   document.getElementById('fpOtpInput').value='';updateOtpBoxes('');
 });
 
-/* ─── CAMERA BARCODE SCANNER (html5-qrcode) ─── */
+/* ─── PRINT RECEIPT ─── */
+function printReceipt(txnId,items,total,cash,change){
+  const now=new Date();
+  const dateStr=now.toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
+  const timeStr=now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  const itemRows=items.map(ci=>`
+    <tr>
+      <td style="padding:4px 0;font-size:13px">${ci.name}</td>
+      <td style="padding:4px 0;font-size:13px;text-align:center">${ci.qty}</td>
+      <td style="padding:4px 0;font-size:13px;text-align:right">$${ci.price.toFixed(2)}</td>
+      <td style="padding:4px 0;font-size:13px;text-align:right;font-weight:700">$${(ci.price*ci.qty).toFixed(2)}</td>
+    </tr>`).join('');
+
+  const changeRow=cash>0?`
+    <tr><td colspan="4" style="padding:2px 0"><hr style="border:none;border-top:1px dashed #ccc;margin:6px 0"></td></tr>
+    <tr>
+      <td colspan="2" style="font-size:13px;color:#555">Cash Given</td>
+      <td colspan="2" style="font-size:13px;text-align:right">$${cash.toFixed(2)}</td>
+    </tr>
+    <tr>
+      <td colspan="2" style="font-size:14px;font-weight:800">CHANGE</td>
+      <td colspan="2" style="font-size:14px;font-weight:800;text-align:right">$${change.toFixed(2)}</td>
+    </tr>`:'';
+
+  const html=`<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Receipt ${txnId}</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Courier New',monospace;width:300px;margin:0 auto;padding:12px;color:#111;font-size:13px}
+  .store-name{text-align:center;font-size:20px;font-weight:900;letter-spacing:2px;margin-bottom:2px}
+  .store-sub{text-align:center;font-size:11px;color:#555;margin-bottom:12px}
+  .divider{border:none;border-top:1px dashed #999;margin:8px 0}
+  .meta{font-size:11px;color:#555;margin-bottom:8px}
+  .meta span{display:block}
+  table{width:100%;border-collapse:collapse}
+  thead th{font-size:11px;text-transform:uppercase;color:#555;padding:4px 0;border-bottom:1px solid #ddd}
+  thead th:nth-child(1){text-align:left}
+  thead th:nth-child(2){text-align:center}
+  thead th:nth-child(3){text-align:right}
+  thead th:nth-child(4){text-align:right}
+  .total-row td{padding-top:8px;font-size:15px;font-weight:900;border-top:2px solid #111}
+  .total-row td:last-child{text-align:right}
+  .footer{text-align:center;font-size:11px;color:#777;margin-top:14px;line-height:1.6}
+  .txn{font-size:10px;color:#aaa;text-align:center;margin-top:4px}
+  @media print{
+    body{width:100%}
+    @page{margin:4mm;size:80mm auto}
+  }
+</style>
+</head>
+<body>
+  <div class="store-name">🔥 PHOENIX</div>
+  <div class="store-sub">STORE RECEIPT</div>
+  <hr class="divider">
+  <div class="meta">
+    <span>📅 ${dateStr}</span>
+    <span>🕐 ${timeStr}</span>
+  </div>
+  <hr class="divider">
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Qty</th>
+        <th>Price</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${itemRows}
+      <tr><td colspan="4"><hr class="divider" style="margin:6px 0"></td></tr>
+      <tr class="total-row">
+        <td colspan="2">TOTAL</td>
+        <td colspan="2">$${total.toFixed(2)}</td>
+      </tr>
+      ${changeRow}
+    </tbody>
+  </table>
+  <div class="footer">
+    Thank you for shopping!<br>
+    Please come again 🙏
+  </div>
+  <div class="txn">${txnId}</div>
+  <script>window.onload=()=>{window.print();window.onafterprint=()=>window.close();}<\/script>
+</body>
+</html>`;
+
+  const w=window.open('','_blank','width=380,height=600');
+  if(w){w.document.write(html);w.document.close();}
+  else{showToast('⚠️ Allow popups to print receipts','warning');}
+}
+
+
 let html5QrScanner=null;
 let camActive=false;
 
