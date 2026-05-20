@@ -644,20 +644,20 @@ tbody td{padding:9px 10px;vertical-align:middle}
       </div>
       <div class="cart-totals">
         <div class="ct-row"><span>Items</span><span class="val" id="cartTotalQty">0</span></div>
-        <div class="ct-row"><span>Subtotal</span><span class="val" id="cartSubtotal">$0.00</span></div>
-        <div class="ct-row grand"><span>TOTAL</span><span class="val" id="cartTotal">$0.00</span></div>
+        <div class="ct-row"><span>Subtotal</span><span class="val" id="cartSubtotal">ج.م 0.00</span></div>
+        <div class="ct-row grand"><span>TOTAL</span><span class="val" id="cartTotal">ج.م 0.00</span></div>
         <!-- Cash / Change -->
         <div class="change-box" id="changeBox" style="display:none">
           <div class="change-row">
             <label class="change-lbl">💵 Cash Given</label>
             <div class="change-input-wrap">
-              <span class="change-currency">$</span>
+              <span class="change-currency">ج.م</span>
               <input type="number" id="cashGiven" class="change-input" placeholder="0.00" min="0" step="0.01">
             </div>
           </div>
           <div class="change-result" id="changeResult">
             <span class="change-result-lbl">Change</span>
-            <span class="change-result-val" id="changeVal">$0.00</span>
+            <span class="change-result-val" id="changeVal">ج.م 0.00</span>
           </div>
         </div>
         <button class="btn-confirm" id="btnConfirm" disabled>✓ Confirm Purchase</button>
@@ -779,20 +779,20 @@ tbody td{padding:9px 10px;vertical-align:middle}
   <div class="m-cart-items" id="cartItemsM"></div>
   <div class="m-cart-totals">
     <div class="m-ct-row"><span>Items</span><span style="font-family:var(--mono);font-weight:700;color:var(--text)" id="cartTotalQtyM">0</span></div>
-    <div class="m-ct-row"><span>Subtotal</span><span style="font-family:var(--mono);font-weight:700;color:var(--accent2)" id="cartSubtotalM">$0.00</span></div>
-    <div class="m-ct-grand"><span>TOTAL</span><span class="val" id="cartTotalM">$0.00</span></div>
+    <div class="m-ct-row"><span>Subtotal</span><span style="font-family:var(--mono);font-weight:700;color:var(--accent2)" id="cartSubtotalM">ج.م 0.00</span></div>
+    <div class="m-ct-grand"><span>TOTAL</span><span class="val" id="cartTotalM">ج.م 0.00</span></div>
     <!-- Cash / Change -->
     <div class="change-box" id="changeBoxM" style="display:none">
       <div class="change-row">
         <label class="change-lbl">💵 Cash Given</label>
         <div class="change-input-wrap">
-          <span class="change-currency">$</span>
+          <span class="change-currency">ج.م</span>
           <input type="number" id="cashGivenM" class="change-input" placeholder="0.00" min="0" step="0.01">
         </div>
       </div>
       <div class="change-result" id="changeResultM">
         <span class="change-result-lbl">Change</span>
-        <span class="change-result-val" id="changeValM">$0.00</span>
+        <span class="change-result-val" id="changeValM">ج.م 0.00</span>
       </div>
     </div>
     <button class="m-btn-confirm" id="btnConfirmM" disabled>✓ Confirm Purchase</button>
@@ -854,16 +854,16 @@ tbody td{padding:9px 10px;vertical-align:middle}
       <div class="confirm-list" id="confirmItemsList"></div>
       <div class="confirm-grand">
         <span class="lbl">Total Amount</span>
-        <span class="amt" id="confirmGrandTotal">$0.00</span>
+        <span class="amt" id="confirmGrandTotal">ج.م 0.00</span>
       </div>
       <div id="confirmChangeRow" style="display:none;margin-top:8px;padding:8px 10px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
         <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
           <span style="color:var(--text3)">Cash Given</span>
-          <span style="font-family:var(--mono);font-weight:700;color:var(--text)" id="confirmCashGiven">$0.00</span>
+          <span style="font-family:var(--mono);font-weight:700;color:var(--text)" id="confirmCashGiven">ج.م 0.00</span>
         </div>
         <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:800">
           <span style="color:var(--text2)">Change</span>
-          <span style="font-family:var(--mono);color:var(--accent2)" id="confirmChange">$0.00</span>
+          <span style="font-family:var(--mono);color:var(--accent2)" id="confirmChange">ج.م 0.00</span>
         </div>
       </div>
     </div>
@@ -1268,7 +1268,7 @@ function renderTable(){
       return `<tr id="row-${item.barcode}" class="${cls}">
         <td class="td-barcode">${esc(item.barcode)}</td>
         <td class="td-name">${esc(item.name)}</td>
-        <td class="td-price">$${parseFloat(item.price).toFixed(2)}</td>
+        <td class="td-price">ج.م ${parseFloat(item.price).toFixed(2)}</td>
         <td class="td-stock">${warn}${item.stock}</td>
         <td class="td-actions">
           <button class="btn-edit" onclick="openEdit('${esc(item.barcode)}')">Edit</button>
@@ -1299,7 +1299,7 @@ function renderTable(){
           <div class="m-product-name">${esc(item.name)}</div>
           <div class="m-product-barcode">${esc(item.barcode)}</div>
           <div class="m-product-meta">
-            <span class="m-product-price">$${parseFloat(item.price).toFixed(2)}</span>
+            <span class="m-product-price">ج.م ${parseFloat(item.price).toFixed(2)}</span>
             <span class="m-product-stock ${stockCls}">Stock: ${stockLabel}</span>
           </div>
         </div>
@@ -1389,8 +1389,8 @@ function renderCart(){
   const cf=document.getElementById('btnConfirm');
   if(qb)qb.textContent=`${totalQty} item${totalQty!==1?'s':''}`;
   if(tq)tq.textContent=totalQty;
-  if(st)st.textContent=`$${subtotal.toFixed(2)}`;
-  if(ct)ct.textContent=`$${subtotal.toFixed(2)}`;
+  if(st)st.textContent=`ج.م ${subtotal.toFixed(2)}`;
+  if(ct)ct.textContent=`ج.م ${subtotal.toFixed(2)}`;
   if(cf)cf.disabled=cart.length===0;
   const container=document.getElementById('cartItems');
   const empty=document.getElementById('cartEmpty');
@@ -1408,13 +1408,13 @@ function renderCart(){
             <button class="ci-rm" onclick="removeFromCart('${esc(ci.barcode)}')">✕</button>
           </div>
           <div class="ci-bot">
-            <div class="ci-price">$${ci.price.toFixed(2)}/ea</div>
+            <div class="ci-price">ج.م ${ci.price.toFixed(2)}/ea</div>
             <div class="qty-ctrl">
               <button class="qty-btn" onclick="changeQty('${esc(ci.barcode)}',-1)">−</button>
               <div class="qty-num">${ci.qty}</div>
               <button class="qty-btn" onclick="changeQty('${esc(ci.barcode)}',1)">+</button>
             </div>
-            <div class="ci-sub">$${(ci.price*ci.qty).toFixed(2)}</div>
+            <div class="ci-sub">ج.م ${(ci.price*ci.qty).toFixed(2)}</div>
           </div>`;
         container.appendChild(div);
       });
@@ -1429,8 +1429,8 @@ function renderCart(){
   const cfM=document.getElementById('btnConfirmM');
   if(qbM)qbM.textContent=`${totalQty} item${totalQty!==1?'s':''}`;
   if(tqM)tqM.textContent=totalQty;
-  if(stM)stM.textContent=`$${subtotal.toFixed(2)}`;
-  if(ctM)ctM.textContent=`$${subtotal.toFixed(2)}`;
+  if(stM)stM.textContent=`ج.م ${subtotal.toFixed(2)}`;
+  if(ctM)ctM.textContent=`ج.م ${subtotal.toFixed(2)}`;
   if(cfM)cfM.disabled=cart.length===0;
   const mItems=document.getElementById('cartItemsM');
   const mEmpty=document.getElementById('cartEmptyM');
@@ -1448,13 +1448,13 @@ function renderCart(){
             <button class="m-ci-rm" onclick="removeFromCart('${esc(ci.barcode)}')">✕</button>
           </div>
           <div class="m-ci-bot">
-            <div class="m-ci-price">$${ci.price.toFixed(2)}/ea</div>
+            <div class="m-ci-price">ج.م ${ci.price.toFixed(2)}/ea</div>
             <div class="m-qty-ctrl">
               <button class="m-qty-btn" onclick="changeQty('${esc(ci.barcode)}',-1)">−</button>
               <div class="m-qty-num">${ci.qty}</div>
               <button class="m-qty-btn" onclick="changeQty('${esc(ci.barcode)}',1)">+</button>
             </div>
-            <div class="m-ci-sub">$${(ci.price*ci.qty).toFixed(2)}</div>
+            <div class="m-ci-sub">ج.م ${(ci.price*ci.qty).toFixed(2)}</div>
           </div>`;
         mItems.appendChild(div);
       });
@@ -1499,16 +1499,16 @@ function updateChange(){
     const cash=parseFloat(inp.value)||0;
     const change=cash-total;
     if(cash===0){
-      valEl.textContent='$0.00';
+      valEl.textContent='ج.م 0.00';
       valEl.className='change-result-val';
     }else if(change<0){
-      valEl.textContent=`-$${Math.abs(change).toFixed(2)}`;
+      valEl.textContent=`-ج.م ${Math.abs(change).toFixed(2)}`;
       valEl.className='change-result-val negative';
     }else if(change===0){
       valEl.textContent='Exact! 🎯';
       valEl.className='change-result-val exact';
     }else{
-      valEl.textContent=`$${change.toFixed(2)}`;
+      valEl.textContent=`ج.م ${change.toFixed(2)}`;
       valEl.className='change-result-val';
     }
   });
@@ -1540,17 +1540,17 @@ function openConfirm(){
   document.getElementById('confirmItemsList').innerHTML=cart.map(ci=>`
     <div class="confirm-item">
       <div class="confirm-item-name">${esc(ci.name)}</div>
-      <div class="confirm-item-detail">${ci.qty} × $${ci.price.toFixed(2)} = <strong style="color:var(--accent2)">$${(ci.price*ci.qty).toFixed(2)}</strong></div>
+      <div class="confirm-item-detail">${ci.qty} × ج.م ${ci.price.toFixed(2)} = <strong style="color:var(--accent2)">ج.م ${(ci.price*ci.qty).toFixed(2)}</strong></div>
     </div>`).join('');
-  document.getElementById('confirmGrandTotal').textContent=`$${grand.toFixed(2)}`;
+  document.getElementById('confirmGrandTotal').textContent=`ج.م ${grand.toFixed(2)}`;
   // Show cash/change in confirm modal
   const cashEl=document.getElementById('cashGiven')||document.getElementById('cashGivenM');
   const cash=parseFloat(cashEl&&cashEl.value)||0;
   const changeRow=document.getElementById('confirmChangeRow');
   if(cash>0){
     changeRow.style.display='block';
-    document.getElementById('confirmCashGiven').textContent=`$${cash.toFixed(2)}`;
-    document.getElementById('confirmChange').textContent=`$${Math.max(0,cash-grand).toFixed(2)}`;
+    document.getElementById('confirmCashGiven').textContent=`ج.م ${cash.toFixed(2)}`;
+    document.getElementById('confirmChange').textContent=`ج.م ${Math.max(0,cash-grand).toFixed(2)}`;
   }else{
     changeRow.style.display='none';
   }
@@ -1572,7 +1572,7 @@ document.getElementById('btnBuy').addEventListener('click',async()=>{
   if(r&&r.ok){
     const cartSnap=[...cart];
     closeModal('confirmModal');cart=[];renderCart();await loadDBFromAPI();
-    showToast(`✅ Purchase complete — $${grand.toFixed(2)}!`,'success');
+    showToast(`✅ Purchase complete — ج.م ${grand.toFixed(2)}!`,'success');
     // Ask to print
     setTimeout(()=>printReceipt(txnId,cartSnap,grand,cash,change),400);
   }
@@ -1591,20 +1591,20 @@ async function renderLogs(){
     const items=logs.reduce((s,l)=>s+l.totalqty,0);
     stats.innerHTML=`
       <div class="stat-chip"><span class="sc-label">Purchases</span><span class="sc-val">${logs.length}</span></div>
-      <div class="stat-chip"><span class="sc-label">Revenue</span><span class="sc-val">$${rev.toFixed(2)}</span></div>
+      <div class="stat-chip"><span class="sc-label">Revenue</span><span class="sc-val">ج.م ${rev.toFixed(2)}</span></div>
       <div class="stat-chip"><span class="sc-label">Items Sold</span><span class="sc-val">${items}</span></div>
-      <div class="stat-chip"><span class="sc-label">Avg Order</span><span class="sc-val">$${(rev/logs.length).toFixed(2)}</span></div>`;
+      <div class="stat-chip"><span class="sc-label">Avg Order</span><span class="sc-val">ج.م ${(rev/logs.length).toFixed(2)}</span></div>`;
   }else{stats.innerHTML='';}
   if(!logs.length){body.innerHTML='<div class="logs-empty">No purchases yet.</div>';return;}
   body.innerHTML=logs.map(log=>`
     <div class="log-entry">
       <div class="log-hd">
         <span class="log-id">${esc(log.id)}</span>
-        <span class="log-badge">$${parseFloat(log.total).toFixed(2)}</span>
+        <span class="log-badge">ج.م ${parseFloat(log.total).toFixed(2)}</span>
         <span class="log-date">${new Date(log.date).toLocaleString()}</span>
       </div>
-      <div class="log-items-list">${log.items.map(i=>`<strong>${esc(i.name)}</strong> × ${i.qty} @ $${parseFloat(i.price).toFixed(2)} = $${parseFloat(i.subtotal).toFixed(2)}<br>`).join('')}</div>
-      <div class="log-total-row"><span class="lt-lbl">Total (${log.totalqty} items)</span><span class="lt-val">$${parseFloat(log.total).toFixed(2)}</span></div>
+      <div class="log-items-list">${log.items.map(i=>`<strong>${esc(i.name)}</strong> × ${i.qty} @ ج.م ${parseFloat(i.price).toFixed(2)} = ج.م ${parseFloat(i.subtotal).toFixed(2)}<br>`).join('')}</div>
+      <div class="log-total-row"><span class="lt-lbl">Total (${log.totalqty} items)</span><span class="lt-val">ج.م ${parseFloat(log.total).toFixed(2)}</span></div>
     </div>`).join('');
 }
 document.getElementById('btnClearLogs').addEventListener('click',async()=>{
@@ -1659,7 +1659,7 @@ function processScan(code){
   const db=getDB();const item=db.find(i=>i.barcode===code);
   if(item){
     const added=addToCart(code);
-    const msg=added?`[${item.name}] — $${item.price.toFixed(2)} ✓`:`[${item.name}] — ⚠️ Stock issue`;
+    const msg=added?`[${item.name}] — ج.م ${item.price.toFixed(2)} ✓`:`[${item.name}] — ⚠️ Stock issue`;
     ['lastScanItem','lastScanItemM'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=msg;});
     if(added){highlightRow(code);if(isMobile())showPage('cart');}
   }else{
@@ -1924,19 +1924,19 @@ function printReceipt(txnId,items,total,cash,change){
     <tr>
       <td style="padding:4px 0;font-size:13px">${ci.name}</td>
       <td style="padding:4px 0;font-size:13px;text-align:center">${ci.qty}</td>
-      <td style="padding:4px 0;font-size:13px;text-align:right">$${ci.price.toFixed(2)}</td>
-      <td style="padding:4px 0;font-size:13px;text-align:right;font-weight:700">$${(ci.price*ci.qty).toFixed(2)}</td>
+      <td style="padding:4px 0;font-size:13px;text-align:right">ج.م ${ci.price.toFixed(2)}</td>
+      <td style="padding:4px 0;font-size:13px;text-align:right;font-weight:700">ج.م ${(ci.price*ci.qty).toFixed(2)}</td>
     </tr>`).join('');
 
   const changeRow=cash>0?`
     <tr><td colspan="4" style="padding:2px 0"><hr style="border:none;border-top:1px dashed #ccc;margin:6px 0"></td></tr>
     <tr>
       <td colspan="2" style="font-size:13px;color:#555">Cash Given</td>
-      <td colspan="2" style="font-size:13px;text-align:right">$${cash.toFixed(2)}</td>
+      <td colspan="2" style="font-size:13px;text-align:right">ج.م ${cash.toFixed(2)}</td>
     </tr>
     <tr>
       <td colspan="2" style="font-size:14px;font-weight:800">CHANGE</td>
-      <td colspan="2" style="font-size:14px;font-weight:800;text-align:right">$${change.toFixed(2)}</td>
+      <td colspan="2" style="font-size:14px;font-weight:800;text-align:right">ج.م ${change.toFixed(2)}</td>
     </tr>`:'';
 
   const html=`<!DOCTYPE html>
@@ -1991,7 +1991,7 @@ function printReceipt(txnId,items,total,cash,change){
       <tr><td colspan="4"><hr class="divider" style="margin:6px 0"></td></tr>
       <tr class="total-row">
         <td colspan="2">TOTAL</td>
-        <td colspan="2">$${total.toFixed(2)}</td>
+        <td colspan="2">ج.م ${total.toFixed(2)}</td>
       </tr>
       ${changeRow}
     </tbody>
