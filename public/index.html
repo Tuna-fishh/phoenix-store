@@ -458,6 +458,20 @@ tbody td{padding:9px 10px;vertical-align:middle}
 .m-settings-fab:active{transform:scale(.93)}
 .m-settings-fab.visible{display:flex}
 
+/* ═══ CHANGE CALCULATOR ═══ */
+.change-box{background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;margin:10px 0}
+.change-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.change-lbl{font-size:11px;font-weight:700;color:var(--text2);white-space:nowrap}
+.change-input-wrap{display:flex;align-items:center;background:var(--surface);border:1px solid var(--border2);border-radius:8px;overflow:hidden;flex:1;max-width:130px}
+.change-currency{padding:0 8px;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text3);background:var(--surface2);border-right:1px solid var(--border)}
+.change-input{border:none;background:transparent;color:var(--text);font-family:var(--mono);font-size:13px;font-weight:700;padding:7px 8px;width:100%;outline:none}
+.change-input::-webkit-inner-spin-button,.change-input::-webkit-outer-spin-button{-webkit-appearance:none}
+.change-result{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--surface);border-radius:8px;border:1px solid var(--border)}
+.change-result-lbl{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
+.change-result-val{font-family:var(--mono);font-size:16px;font-weight:800;color:var(--accent2)}
+.change-result-val.negative{color:var(--danger)}
+.change-result-val.exact{color:#a78bfa}
+
 /* ═══ SCROLLBAR ═══ */
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -632,6 +646,20 @@ tbody td{padding:9px 10px;vertical-align:middle}
         <div class="ct-row"><span>Items</span><span class="val" id="cartTotalQty">0</span></div>
         <div class="ct-row"><span>Subtotal</span><span class="val" id="cartSubtotal">$0.00</span></div>
         <div class="ct-row grand"><span>TOTAL</span><span class="val" id="cartTotal">$0.00</span></div>
+        <!-- Cash / Change -->
+        <div class="change-box" id="changeBox" style="display:none">
+          <div class="change-row">
+            <label class="change-lbl">💵 Cash Given</label>
+            <div class="change-input-wrap">
+              <span class="change-currency">$</span>
+              <input type="number" id="cashGiven" class="change-input" placeholder="0.00" min="0" step="0.01">
+            </div>
+          </div>
+          <div class="change-result" id="changeResult">
+            <span class="change-result-lbl">Change</span>
+            <span class="change-result-val" id="changeVal">$0.00</span>
+          </div>
+        </div>
         <button class="btn-confirm" id="btnConfirm" disabled>✓ Confirm Purchase</button>
         <button class="btn-clear-cart" id="btnClearCart">✕ Clear Cart</button>
       </div>
@@ -753,6 +781,20 @@ tbody td{padding:9px 10px;vertical-align:middle}
     <div class="m-ct-row"><span>Items</span><span style="font-family:var(--mono);font-weight:700;color:var(--text)" id="cartTotalQtyM">0</span></div>
     <div class="m-ct-row"><span>Subtotal</span><span style="font-family:var(--mono);font-weight:700;color:var(--accent2)" id="cartSubtotalM">$0.00</span></div>
     <div class="m-ct-grand"><span>TOTAL</span><span class="val" id="cartTotalM">$0.00</span></div>
+    <!-- Cash / Change -->
+    <div class="change-box" id="changeBoxM" style="display:none">
+      <div class="change-row">
+        <label class="change-lbl">💵 Cash Given</label>
+        <div class="change-input-wrap">
+          <span class="change-currency">$</span>
+          <input type="number" id="cashGivenM" class="change-input" placeholder="0.00" min="0" step="0.01">
+        </div>
+      </div>
+      <div class="change-result" id="changeResultM">
+        <span class="change-result-lbl">Change</span>
+        <span class="change-result-val" id="changeValM">$0.00</span>
+      </div>
+    </div>
     <button class="m-btn-confirm" id="btnConfirmM" disabled>✓ Confirm Purchase</button>
     <button class="m-btn-clear" id="btnClearCartM">✕ Clear Cart</button>
   </div>
@@ -1411,6 +1453,18 @@ function renderCart(){
 
   const badge=document.getElementById('cartNavBadge');
   if(badge){badge.textContent=totalQty;badge.classList.toggle('show',totalQty>0);}
+
+  // Show/hide change calculator
+  const hasItems=cart.length>0;
+  const cb=document.getElementById('changeBox');
+  const cbM=document.getElementById('changeBoxM');
+  if(cb)cb.style.display=hasItems?'block':'none';
+  if(cbM)cbM.style.display=hasItems?'block':'none';
+  // Reset cash inputs & change display when cart changes
+  ['cashGiven','cashGivenM'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  updateChange();
 }
 
 ['btnClearCart','btnClearCartM'].forEach(id=>{
@@ -1419,6 +1473,45 @@ function renderCart(){
     if(!cart.length)return;
     if(!confirm('Clear the entire cart?'))return;
     cart=[];renderCart();
+  });
+});
+
+/* ─── CHANGE CALCULATOR ─── */
+function updateChange(){
+  const total=cart.reduce((s,c)=>s+c.price*c.qty,0);
+  ['cashGiven','cashGivenM'].forEach((inputId,i)=>{
+    const valId=i===0?'changeVal':'changeValM';
+    const resId=i===0?'changeResult':'changeResultM';
+    const inp=document.getElementById(inputId);
+    const valEl=document.getElementById(valId);
+    const resEl=document.getElementById(resId);
+    if(!inp||!valEl||!resEl)return;
+    const cash=parseFloat(inp.value)||0;
+    const change=cash-total;
+    if(cash===0){
+      valEl.textContent='$0.00';
+      valEl.className='change-result-val';
+    }else if(change<0){
+      valEl.textContent=`-$${Math.abs(change).toFixed(2)}`;
+      valEl.className='change-result-val negative';
+    }else if(change===0){
+      valEl.textContent='Exact! 🎯';
+      valEl.className='change-result-val exact';
+    }else{
+      valEl.textContent=`$${change.toFixed(2)}`;
+      valEl.className='change-result-val';
+    }
+  });
+}
+['cashGiven','cashGivenM'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.addEventListener('input',()=>{
+    // sync both inputs
+    const other=id==='cashGiven'?'cashGivenM':'cashGiven';
+    const otherEl=document.getElementById(other);
+    if(otherEl)otherEl.value=el.value;
+    updateChange();
   });
 });
 
