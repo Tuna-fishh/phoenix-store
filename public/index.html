@@ -143,6 +143,8 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .m-btn-edit:active{background:rgba(59,130,246,.25)}
 .m-btn-del{width:36px;height:36px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;color:var(--danger);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
 .m-btn-del:active{background:rgba(239,68,68,.22)}
+.m-btn-add-cart{width:36px;height:36px;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);border-radius:8px;color:var(--accent2);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.m-btn-add-cart:active{background:rgba(16,185,129,.3);transform:scale(.93)}
 .m-add-fab{position:fixed;bottom:calc(64px + env(safe-area-inset-bottom) + 16px);right:16px;width:54px;height:54px;background:linear-gradient(135deg,#065f46,#059669);border:none;border-radius:50%;color:#fff;font-size:26px;cursor:pointer;box-shadow:0 4px 20px rgba(16,185,129,.45);z-index:150;display:none;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s}
 .m-add-fab:active{transform:scale(.93)}
 .m-add-fab.visible{display:flex}
@@ -252,6 +254,9 @@ tbody td{padding:9px 10px;vertical-align:middle}
 .btn-edit,.btn-remove{padding:5px 9px;border-radius:4px;font-family:var(--sans);font-size:11px;font-weight:700;cursor:pointer;transition:all .18s;border:1px solid transparent}
 .btn-edit{background:rgba(59,130,246,.12);color:var(--accent);border-color:rgba(59,130,246,.3)}
 .btn-edit:hover{background:rgba(59,130,246,.22)}
+.btn-add-cart{background:rgba(16,185,129,.12);color:var(--accent2);border-color:rgba(16,185,129,.3);padding:5px 9px;border-radius:4px;font-family:var(--sans);font-size:11px;font-weight:700;cursor:pointer;transition:all .18s;border:1px solid transparent}
+.btn-add-cart:hover{background:rgba(16,185,129,.25)}
+.btn-add-cart:active{transform:scale(.95)}
 .btn-remove{background:rgba(239,68,68,.1);color:var(--danger);border-color:rgba(239,68,68,.3)}
 .btn-remove:hover{background:rgba(239,68,68,.2)}
 .add-row-bar{padding:10px 13px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;background:var(--surface2)}
@@ -1343,6 +1348,7 @@ function renderTable(){
         <td class="td-price">ج.م ${parseFloat(item.price).toFixed(2)}</td>
         <td class="td-stock">${warn}${item.stock}</td>
         <td class="td-actions">
+          <button class="btn-add-cart" onclick="addToCartDirect('${esc(item.barcode)}')">＋ Cart</button>
           <button class="btn-edit" onclick="openEdit('${esc(item.barcode)}')">Edit</button>
           <button class="btn-remove" onclick="removeItem('${esc(item.barcode)}')">✕</button>
         </td></tr>`;
@@ -1376,12 +1382,29 @@ function renderTable(){
           </div>
         </div>
         <div class="m-product-actions">
+          <button class="m-btn-add-cart" onclick="addToCartDirect('${esc(item.barcode)}')">＋</button>
           <button class="m-btn-edit" onclick="openEdit('${esc(item.barcode)}')">✏️</button>
           <button class="m-btn-del" onclick="removeItem('${esc(item.barcode)}')">✕</button>
         </div>`;
       mList.appendChild(card);
     });
   }
+}
+
+/* ─── ADD TO CART DIRECT ─── */
+function addToCartDirect(barcode){
+  const item=getDB().find(i=>i.barcode===barcode);
+  if(!item){showToast('Product not found.','error');return;}
+  if(item.stock<=0){showToast(`⛔ "${item.name}" is out of stock.`,'error');return;}
+  const existing=cart.find(c=>c.barcode===barcode);
+  if(existing){
+    if(existing.qty>=item.stock){showToast(`⚠️ Max stock reached (${item.stock}).`,'warning');return;}
+    existing.qty++;
+  }else{
+    cart.push({barcode:item.barcode,name:item.name,price:item.price,qty:1});
+  }
+  renderCart();
+  showToast(`✅ "${item.name}" added to cart.`,'success');
 }
 
 /* ─── DB CRUD ─── */
