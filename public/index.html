@@ -472,6 +472,37 @@ tbody td{padding:9px 10px;vertical-align:middle}
 .change-result-val.negative{color:var(--danger)}
 .change-result-val.exact{color:#a78bfa}
 
+/* ═══ LANGUAGE TOGGLE ═══ */
+.lang-toggle{display:flex;background:var(--surface);border:1px solid var(--border2);border-radius:8px;overflow:hidden}
+.lang-opt{padding:7px 14px;border:none;background:transparent;color:var(--text3);font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s}
+.lang-opt.active{background:var(--accent);color:#fff}
+
+/* ═══ NUMPAD ═══ */
+.numpad-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000;display:none;align-items:flex-end;justify-content:center}
+.numpad-overlay.open{display:flex}
+.numpad-box{background:var(--surface);border-radius:20px 20px 0 0;padding:16px;width:100%;max-width:360px}
+.numpad-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.numpad-title{font-size:13px;font-weight:700;color:var(--text2)}
+.numpad-display{font-family:var(--mono);font-size:28px;font-weight:800;color:var(--accent);text-align:center;padding:10px;background:var(--surface2);border-radius:10px;margin-bottom:12px;min-height:52px;letter-spacing:2px}
+.numpad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.np-btn{padding:16px;border:1px solid var(--border2);border-radius:12px;background:var(--surface2);color:var(--text);font-family:var(--mono);font-size:20px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center}
+.np-btn:active{background:var(--accent);border-color:var(--accent);color:#fff;transform:scale(.95)}
+.np-btn.del{background:var(--surface3);color:var(--text2)}
+.np-btn.confirm{background:linear-gradient(135deg,#1e40af,#2563eb);border-color:rgba(59,130,246,.4);color:#fff;font-size:16px}
+.np-btn.zero{grid-column:span 2}
+
+/* ═══ REPRINT BTN IN LOGS ═══ */
+.log-actions{display:flex;gap:8px;margin-top:8px}
+.btn-reprint{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text2);font-family:var(--sans);font-size:11px;font-weight:700;padding:6px 12px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
+.btn-reprint:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ═══ RTL SUPPORT ═══ */
+body.rtl{direction:rtl;text-align:right}
+body.rtl .modal-hd{flex-direction:row-reverse}
+body.rtl .settings-item{flex-direction:row-reverse}
+body.rtl .ct-row,.body.rtl .m-ct-row{flex-direction:row-reverse}
+body.rtl .nav-bar{direction:ltr}
+
 /* ═══ SCROLLBAR ═══ */
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -963,6 +994,22 @@ tbody td{padding:9px 10px;vertical-align:middle}
           </div>
         </div>
       </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">Language / اللغة</div>
+        <div class="settings-item">
+          <div class="settings-item-info">
+            <div class="settings-item-label" id="langSettingLabel">Language</div>
+            <div class="settings-item-sub" id="langSettingSub">Currently: English</div>
+          </div>
+          <div class="settings-item-action">
+            <div class="lang-toggle" id="langToggle">
+              <button class="lang-opt" id="langOptEN" onclick="setLang('en')">EN</button>
+              <button class="lang-opt" id="langOptAR" onclick="setLang('ar')">ع</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1131,6 +1178,31 @@ tbody td{padding:9px 10px;vertical-align:middle}
         <div class="fp-step-sub" style="text-align:center">Your password has been updated successfully. You can now log in with your new password.</div>
         <button class="btn-fp-next" onclick="closeModal('forgotPassModal')">← Back to Login</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ NUMPAD MODAL ═══════════ -->
+<div class="numpad-overlay" id="numpadOverlay">
+  <div class="numpad-box">
+    <div class="numpad-header">
+      <div class="numpad-title" id="numpadTitle">Set Quantity</div>
+      <button class="modal-close" onclick="closeNumpad()">✕</button>
+    </div>
+    <div class="numpad-display" id="numpadDisplay">0</div>
+    <div class="numpad-grid">
+      <button class="np-btn" onclick="npPress('1')">1</button>
+      <button class="np-btn" onclick="npPress('2')">2</button>
+      <button class="np-btn" onclick="npPress('3')">3</button>
+      <button class="np-btn" onclick="npPress('4')">4</button>
+      <button class="np-btn" onclick="npPress('5')">5</button>
+      <button class="np-btn" onclick="npPress('6')">6</button>
+      <button class="np-btn" onclick="npPress('7')">7</button>
+      <button class="np-btn" onclick="npPress('8')">8</button>
+      <button class="np-btn" onclick="npPress('9')">9</button>
+      <button class="np-btn del" onclick="npDel()">⌫</button>
+      <button class="np-btn zero" onclick="npPress('0')">0</button>
+      <button class="np-btn confirm" onclick="npConfirm()">✓ Set</button>
     </div>
   </div>
 </div>
@@ -1411,7 +1483,7 @@ function renderCart(){
             <div class="ci-price">ج.م ${ci.price.toFixed(2)}/ea</div>
             <div class="qty-ctrl">
               <button class="qty-btn" onclick="changeQty('${esc(ci.barcode)}',-1)">−</button>
-              <div class="qty-num">${ci.qty}</div>
+              <div class="qty-num" onclick="openNumpad('${esc(ci.barcode)}','${esc(ci.name)}')" style="cursor:pointer;border:1px solid var(--border2);border-radius:4px;padding:1px 6px" title="Tap to set">${ci.qty}</div>
               <button class="qty-btn" onclick="changeQty('${esc(ci.barcode)}',1)">+</button>
             </div>
             <div class="ci-sub">ج.م ${(ci.price*ci.qty).toFixed(2)}</div>
@@ -1451,7 +1523,7 @@ function renderCart(){
             <div class="m-ci-price">ج.م ${ci.price.toFixed(2)}/ea</div>
             <div class="m-qty-ctrl">
               <button class="m-qty-btn" onclick="changeQty('${esc(ci.barcode)}',-1)">−</button>
-              <div class="m-qty-num">${ci.qty}</div>
+              <div class="m-qty-num" onclick="openNumpad('${esc(ci.barcode)}','${esc(ci.name)}')" style="cursor:pointer;border:1px solid var(--border2);border-radius:6px;padding:2px 8px">${ci.qty}</div>
               <button class="m-qty-btn" onclick="changeQty('${esc(ci.barcode)}',1)">+</button>
             </div>
             <div class="m-ci-sub">ج.م ${(ci.price*ci.qty).toFixed(2)}</div>
@@ -1605,6 +1677,9 @@ async function renderLogs(){
       </div>
       <div class="log-items-list">${log.items.map(i=>`<strong>${esc(i.name)}</strong> × ${i.qty} @ ج.م ${parseFloat(i.price).toFixed(2)} = ج.م ${parseFloat(i.subtotal).toFixed(2)}<br>`).join('')}</div>
       <div class="log-total-row"><span class="lt-lbl">Total (${log.totalqty} items)</span><span class="lt-val">ج.م ${parseFloat(log.total).toFixed(2)}</span></div>
+      <div class="log-actions">
+        <button class="btn-reprint" onclick='reprintReceipt(${JSON.stringify(log)})'>🖨️ Reprint Receipt</button>
+      </div>
     </div>`).join('');
 }
 document.getElementById('btnClearLogs').addEventListener('click',async()=>{
@@ -1914,6 +1989,102 @@ document.getElementById('fpResend').addEventListener('click',()=>{
   showToast(`📨 New code sent to ${dest}: ${fpOtpCode}`,'info');
   document.getElementById('fpOtpInput').value='';updateOtpBoxes('');
 });
+
+/* ─── NUMPAD ─── */
+let numpadBarcode=null;
+let numpadVal='';
+
+function openNumpad(barcode,name){
+  numpadBarcode=barcode;
+  numpadVal='';
+  const ci=cart.find(c=>c.barcode===barcode);
+  document.getElementById('numpadDisplay').textContent=ci?ci.qty:'0';
+  document.getElementById('numpadTitle').textContent=`Qty: ${name}`;
+  document.getElementById('numpadOverlay').classList.add('open');
+}
+function closeNumpad(){
+  numpadBarcode=null;numpadVal='';
+  document.getElementById('numpadOverlay').classList.remove('open');
+}
+function npPress(d){
+  if(numpadVal.length>=3)return;
+  numpadVal+=d;
+  document.getElementById('numpadDisplay').textContent=numpadVal||'0';
+}
+function npDel(){
+  numpadVal=numpadVal.slice(0,-1);
+  document.getElementById('numpadDisplay').textContent=numpadVal||'0';
+}
+function npConfirm(){
+  const qty=parseInt(numpadVal)||0;
+  if(!numpadBarcode)return;
+  if(qty===0){removeFromCart(numpadBarcode);}
+  else{
+    const ci=cart.find(c=>c.barcode===numpadBarcode);
+    if(ci){
+      const item=getDB().find(i=>i.barcode===numpadBarcode);
+      if(item&&qty>item.stock){showToast(`⚠️ Only ${item.stock} in stock`,'warning');ci.qty=item.stock;}
+      else ci.qty=qty;
+      renderCart();
+    }
+  }
+  closeNumpad();
+}
+document.getElementById('numpadOverlay').addEventListener('click',e=>{
+  if(e.target===document.getElementById('numpadOverlay'))closeNumpad();
+});
+
+/* ─── LANGUAGE ─── */
+const LANG={
+  en:{
+    'confirm-btn':'✓ Confirm Purchase','clear-btn':'✕ Clear Cart',
+    'cash-label':'💵 Cash Given','change-label':'Change',
+    'lang-label':'Language','lang-sub':'Currently: English',
+  },
+  ar:{
+    'confirm-btn':'✓ تأكيد الشراء','clear-btn':'✕ مسح السلة',
+    'cash-label':'💵 النقد المعطى','change-label':'الباقي',
+    'lang-label':'اللغة','lang-sub':'الحالية: العربية',
+  }
+};
+let currentLang=localStorage.getItem('phoenixLang')||'en';
+
+function setLang(lang){
+  currentLang=lang;
+  localStorage.setItem('phoenixLang',lang);
+  applyLang();
+}
+function applyLang(){
+  const l=LANG[currentLang];
+  const isAR=currentLang==='ar';
+  document.body.classList.toggle('rtl',isAR);
+  document.documentElement.setAttribute('dir',isAR?'rtl':'ltr');
+  const en=document.getElementById('langOptEN');
+  const ar=document.getElementById('langOptAR');
+  if(en)en.classList.toggle('active',!isAR);
+  if(ar)ar.classList.toggle('active',isAR);
+  const lbl=document.getElementById('langSettingLabel');
+  const sub=document.getElementById('langSettingSub');
+  if(lbl)lbl.textContent=l['lang-label'];
+  if(sub)sub.textContent=l['lang-sub'];
+  const conf=document.getElementById('btnConfirm');
+  const confM=document.getElementById('btnConfirmM');
+  const clr=document.getElementById('btnClearCart');
+  const clrM=document.getElementById('btnClearCartM');
+  if(conf)conf.textContent=l['confirm-btn'];
+  if(confM)confM.textContent=l['confirm-btn'];
+  if(clr)clr.textContent=l['clear-btn'];
+  if(clrM)clrM.textContent=l['clear-btn'];
+  document.querySelectorAll('.change-lbl').forEach(el=>el.textContent=l['cash-label']);
+  document.querySelectorAll('.change-result-lbl').forEach(el=>el.textContent=l['change-label']);
+}
+applyLang();
+
+/* ─── REPRINT RECEIPT ─── */
+function reprintReceipt(log){
+  const items=log.items.map(i=>({...i,price:parseFloat(i.price),qty:parseInt(i.qty)}));
+  printReceipt(log.id,items,parseFloat(log.total),parseFloat(log.cash)||0,parseFloat(log.change)||0);
+}
 
 /* ─── PRINT RECEIPT ─── */
 function printReceipt(txnId,items,total,cash,change){
